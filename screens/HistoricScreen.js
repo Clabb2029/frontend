@@ -1,57 +1,114 @@
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { useState } from 'react';
-import {TabBar, Tab, ApplicationProvider, Layout} from '@ui-kitten/components'
-import { mapping, light as lightTheme } from '@eva-design/eva';
+import { StyleSheet, View, Button, ScrollView, Text, TouchableOpacity, DevSettings, Image } from 'react-native';
+import { Tabs, Carousel } from '@ant-design/react-native';
+import { Badge, ListItem } from 'react-native-elements';
+import { FontAwesome } from '@expo/vector-icons';
 
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import { AlegreyaSans_500Medium } from '@expo-google-fonts/alegreya-sans';
+import AppLoading from 'expo-app-loading';
+import {
+  useFonts,
+  AlegreyaSans_100Thin,
+  AlegreyaSans_100Thin_Italic,
+  AlegreyaSans_300Light,
+  AlegreyaSans_300Light_Italic,
+  AlegreyaSans_400Regular,
+  AlegreyaSans_400Regular_Italic,
+  AlegreyaSans_500Medium,
+  AlegreyaSans_500Medium_Italic,
+  AlegreyaSans_700Bold,
+  AlegreyaSans_700Bold_Italic,
+  AlegreyaSans_800ExtraBold,
+  AlegreyaSans_800ExtraBold_Italic,
+  AlegreyaSans_900Black,
+  AlegreyaSans_900Black_Italic,
+} from '@expo-google-fonts/alegreya-sans';
 
-import { default as theme } from '../custom-theme.json';
+export default function ProfilScreen(props) {
+  let [fontsLoaded] = useFonts({
+    AlegreyaSans_100Thin,
+    AlegreyaSans_100Thin_Italic,
+    AlegreyaSans_300Light,
+    AlegreyaSans_300Light_Italic,
+    AlegreyaSans_400Regular,
+    AlegreyaSans_400Regular_Italic,
+    AlegreyaSans_500Medium,
+    AlegreyaSans_500Medium_Italic,
+    AlegreyaSans_700Bold,
+    AlegreyaSans_700Bold_Italic,
+    AlegreyaSans_800ExtraBold,
+    AlegreyaSans_800ExtraBold_Italic,
+    AlegreyaSans_900Black,
+    AlegreyaSans_900Black_Italic,
+  });
 
+  // Entête nav du haut
+  const tabs = [
+    { title: 'Calendrier', icon: "history" },
+    { title: 'Demandes', icon: "hourglass-half" },
+  ];
 
-
-export default function HistoricScreen(props) {
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
 
   return (
-    <View style={styles.container}>
+<View style={{ flex: 1, marginTop: 50 }}>
+<Text style={styles.h1}>Agenda des gardes : </Text>
+        {/* TabBar :  */}
+        <Tabs
+          tabs={tabs}
+          renderTabBar={tabProps => (
+            <View
+              style={styles.tabs}
+            >
+              {tabProps.tabs.map((tab, i) => (
+                // change the style to fit your needs
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  key={tab.key || i}
+                  style={{
+                    // width: '30%',
+                    padding: 6,
+                  }}
+                  onPress={() => {
+                    const { goToTab, onTabClick } = tabProps;
+                    // tslint:disable-next-line:no-unused-expression
+                    onTabClick && onTabClick(tabs[i], i);
+                    // tslint:disable-next-line:no-unused-expression
+                    goToTab && goToTab(i);
+                  }}
+                >
+                  <FontAwesome name={tab.icon} size={24}
+                    style={{
+                      color: tabProps.activeTab === i ? '#D35400' : "#2C3E50",
+                    }} />
+                  <Text
+                    style={{
+                      color: tabProps.activeTab === i ? '#D35400' : "#2C3E50",
+                      fontFamily: 'AlegreyaSans_500Medium',
+                    }}
+                  >
+                    {tab.title}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        >
+          {/* Tab infos :           */}
+          <View style={styles.tab}>
+            <Text style={styles.h6}>Gardes passées</Text>
+            <Text style={styles.h6}>Gardes à venir</Text>
+          </View>
 
-      <ApplicationProvider
-          mapping={mapping}
-          theme={{ ...theme}}
-      >
+          {/* Tab demandes en attente : */}
+          <View style={styles.tab}>
+    <Text>Demandes en attentes</Text>
 
-        <View style={styles.provider}>
-          <Text style={styles.title}>Agenda des gardes</Text>
-
-
-          <TabBar
-          selectedIndex={selectedIndex}
-          onSelect={index => setSelectedIndex(index)}
-          style={styles.provider}>
-
-            <Tab 
-            title='Calendrier'
-            color= 'black'
-            icon={<FontAwesome name='history' size={25} color='black' />}
-            style= {styles.tab}
-            />
-
-
-            <Tab 
-            title='Demandes'
-            icon={<FontAwesome name='hourglass-2' size={25} color='black' />}
-            style= {styles.tab}
-            />
-
-          </TabBar>
-        </View>
-      </ApplicationProvider>
-    </View>
-  );
-}
+          </View>
+        </Tabs>
+      </View>
+  )
+}};
 
 const styles = StyleSheet.create({
   container: {
@@ -60,19 +117,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  provider: {
-    marginTop: 40,
-    backgroundColor: '#ECF0F1',
-
+  tabs: {
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
-
-  title: {
-    fontSize: 30,
-    
-  }, 
-
-  tab: {
-    flex: 1
-  }
-});
+  h1:{
+    color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    fontSize: 35,
+    textAlign:'center',
+    margin:25
+  },
+  h6: {
+    color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10
+  },
+})
