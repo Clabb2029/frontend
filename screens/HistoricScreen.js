@@ -1,6 +1,6 @@
-import { StyleSheet, View, Button, ScrollView, Text, TouchableOpacity, DevSettings, Image } from 'react-native';
-import { Tabs, Carousel } from '@ant-design/react-native';
-import { Badge, ListItem } from 'react-native-elements';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image } from 'react-native';
+import { Tabs } from '@ant-design/react-native';
+import { ListItem, Button } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
 
 import AppLoading from 'expo-app-loading';
@@ -46,13 +46,19 @@ export default function ProfilScreen(props) {
     { title: 'Demandes', icon: "hourglass-half" },
   ];
 
+  // Listes date
+  const reviews = [
+    { userName: 'User A', avatar: require('../assets/avatar.png'), date: "Du 11/02/2022 au 15/02/2022" },
+    { userName: 'User C', avatar: require('../assets/avatar.png'), date: "Du 11/02/2022 au 15/02/2022" },
+    { userName: 'User B', avatar: require('../assets/avatar.png'), date: "Du 11/02/2022 au 15/02/2022" }
+  ]
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
 
-  return (
-<View style={{ flex: 1, marginTop: 50 }}>
-<Text style={styles.h1}>Agenda des gardes : </Text>
+    return (
+      <View style={{ flex: 1, marginTop: 50 }}>
+        <Text style={styles.h1}>Agenda des gardes : </Text>
         {/* TabBar :  */}
         <Tabs
           tabs={tabs}
@@ -97,18 +103,43 @@ export default function ProfilScreen(props) {
           {/* Tab infos :           */}
           <View style={styles.tab}>
             <Text style={styles.h6}>Gardes passées</Text>
+            <ScrollView>
+              {reviews.map((l, i) => (
+                <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+                  <Image source={l.avatar} style={styles.avatarItem}></Image>
+                  <ListItem.Content>
+                    <ListItem.Title style={styles.h6}>
+                      {l.userName}
+                    </ListItem.Title>
+                    <ListItem.Subtitle style={styles.text}>{l.date}</ListItem.Subtitle>
+                  </ListItem.Content>
+                </ListItem>))}        
             <Text style={styles.h6}>Gardes à venir</Text>
+            </ScrollView>
           </View>
 
           {/* Tab demandes en attente : */}
           <View style={styles.tab}>
-    <Text>Demandes en attentes</Text>
+            <ListItem bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+              <ListItem.Content>
+                <ListItem.Title style={styles.h6}>
+                  User D
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.text}>Du 07/04/22 au 15/04/22</ListItem.Subtitle>
+                <View style={{flexDirection:'row'}}>
+                <Button title="Accepter" buttonStyle={{backgroundColor:"#2C3E50", borderRadius:3}} containerStyle={{width: 100, marginRight: 25, marginVertical:10}} titleStyle={{fontFamily:'AlegreyaSans_500Medium', fontSize:20}}/>
+                <Button title="Refuser" buttonStyle={{backgroundColor:"#2C3E50", borderRadius:3}} containerStyle={{width: 100, marginRight: 15, marginVertical:10}} titleStyle={{fontFamily:'AlegreyaSans_500Medium', fontSize:20}}/>
+                </View>
+              </ListItem.Content>
+            </ListItem>
 
           </View>
         </Tabs>
       </View>
-  )
-}};
+    )
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -123,12 +154,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
-  h1:{
+  tab: {
+    flex: 1,
+    height: 150,
+    backgroundColor: '#ECF0F1',
+  },
+  h1: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 35,
-    textAlign:'center',
-    margin:25
+    textAlign: 'center',
+    margin: 25
   },
   h6: {
     color: '#2C3E50',
@@ -138,5 +174,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     marginLeft: 10
+  },
+  text: {
+    color: '#2C3E50',
+    marginLeft: 20,
+    marginRight: 10,
+    fontFamily: 'AlegreyaSans_400Regular'
+  },
+  avatarItem: {
+    width: 75,
+    height: 75
   },
 })
