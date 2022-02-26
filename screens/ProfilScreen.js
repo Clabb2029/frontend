@@ -1,7 +1,11 @@
-import { StyleSheet, View, Button, ScrollView, Text, TouchableOpacity, DevSettings, Image } from 'react-native';
-import { Tabs, Carousel } from '@ant-design/react-native';
+import { StyleSheet, View, Button, ScrollView, Text, TouchableOpacity, DevSettings, Image, Dimensions } from 'react-native';
+import { Tabs } from '@ant-design/react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRef, useState } from 'react';
+
+import Carousel, { Pagination } from 'react-native-snap-carousel'
 
 import AppLoading from 'expo-app-loading';
 import {
@@ -23,7 +27,6 @@ import {
 } from '@expo-google-fonts/alegreya-sans';
 
 
-
 export default function ProfilScreen(props) {
   let [fontsLoaded] = useFonts({
     AlegreyaSans_100Thin,
@@ -41,6 +44,34 @@ export default function ProfilScreen(props) {
     AlegreyaSans_900Black,
     AlegreyaSans_900Black_Italic,
   });
+
+  // Elements à injecter dans le caroussel d'images
+  const isCarousel = useRef(null)
+  const SLIDER_WIDTH = Dimensions.get('window').width
+  const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1)
+  const data = [
+    {
+      imgUrl: require('../assets/chien1.jpeg')
+    },
+    {
+      imgUrl: require('../assets/chien2.jpeg')
+    },
+    {
+      imgUrl: require('../assets/chien3.jpeg')
+    }
+  ]
+  const CarouselCardItem = ({ item, index }) => {
+    return (
+      <View style={styles.containerCarousel}>
+        <Image
+          source={item.imgUrl}
+          style={styles.image}
+        />
+      </View>
+
+    )
+  }
+  const [index, setIndex] = useState(0)
 
   // Entête nav du haut
   const tabs = [
@@ -108,6 +139,10 @@ export default function ProfilScreen(props) {
           {/* Tab infos :           */}
           <View style={styles.tab}>
             <Text style={styles.h6}>Profil de Clabb</Text>
+            <View style={styles.buttonRight}>
+              <FontAwesome name="envelope" size={25} color="#2C3E50" style={{ marginRight: 15 }} />
+              <MaterialCommunityIcons name="account-star" size={29} color="#2C3E50" style={{ marginRight: 10 }} />
+            </View>
             <View style={styles.star}>
               <FontAwesome name="star" size={24} color="#D35400" />
               <FontAwesome name="star" size={24} color="#D35400" />
@@ -126,28 +161,53 @@ export default function ProfilScreen(props) {
             </View>
             <Text style={styles.h6}>Disponibilité souhaitée :</Text>
           </View>
+
           {/* Tab Photos :           */}
           <View style={styles.tab}>
-            <Text style={styles.text}>Content of Second Tab</Text>
-            <Carousel></Carousel>
+            <Carousel
+              layout="tinder"
+              layoutCardOffset={10}
+              ref={isCarousel}
+              data={data}
+              renderItem={CarouselCardItem}
+              sliderWidth={SLIDER_WIDTH}
+              itemWidth={ITEM_WIDTH}
+              inactiveSlideShift={0}
+              onSnapToItem={(index) => setIndex(index)}
+              useScrollView={true} />
+            <Pagination
+              dotsLength={data.length}
+              activeDotIndex={index}
+              carouselRef={isCarousel}
+              dotStyle={{
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                marginHorizontal: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.92)'
+              }}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+              tappableDots={true}
+            />
           </View>
 
           {/* Tab Avis : */}
           <View style={styles.tab}>
             <ScrollView>
               {reviews.map((l, i) => (
-                <ListItem key={i} bottomDivider style={{backgroundColor: '#ECF0F1'}}>
+                <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
                   <Image source={l.avatar} style={styles.avatarItem}></Image>
                   <ListItem.Content>
                     <ListItem.Title style={styles.h6}>
                       {l.userName}
                     </ListItem.Title>
-                    <View style={{flexDirection:'row'}}>
-                    <FontAwesome name="star" size={24} color="#D35400" />
-                    <FontAwesome name="star" size={24} color="#D35400" />
-                    <FontAwesome name="star" size={24} color="#D35400" />
-                    <FontAwesome name="star" size={24} color="#D35400" />
-                    <FontAwesome name="star" size={24} color="#2C3E50" />
+                    <View style={{ flexDirection: 'row' }}>
+                      <FontAwesome name="star" size={24} color="#D35400" />
+                      <FontAwesome name="star" size={24} color="#D35400" />
+                      <FontAwesome name="star" size={24} color="#D35400" />
+                      <FontAwesome name="star" size={24} color="#D35400" />
+                      <FontAwesome name="star" size={24} color="#2C3E50" />
                     </View>
                     <ListItem.Subtitle style={styles.textReview}>{l.text}</ListItem.Subtitle>
                   </ListItem.Content>
@@ -185,6 +245,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 20
   },
+  buttonRight: {
+    flexDirection: 'row',
+    position: 'absolute',
+    margin: 10,
+    marginLeft: 280
+  },
   tab: {
     flex: 1,
     height: 150,
@@ -207,15 +273,33 @@ const styles = StyleSheet.create({
   },
   badge: {
     backgroundColor: "#D35400",
-    width : 125,
+    width: 125,
     height: 25
   },
   avatarItem: {
     width: 75,
     height: 75
   },
-  textReview:{
+  textReview: {
     fontFamily: 'AlegreyaSans_400Regular',
     color: '#2C3E50',
-  }
+  },
+  containerCarousel: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    width: Dimensions.get('window').width,
+    paddingBottom: 0,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+  },
+  image: {
+    width: Math.round(Dimensions.get('window').width * 1),
+    height: 400,
+  },
 });
