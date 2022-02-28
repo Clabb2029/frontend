@@ -1,4 +1,4 @@
-import { StyleSheet, View, Button, ScrollView, Text, TouchableOpacity, DevSettings, Image, Dimensions } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image, Dimensions } from 'react-native';
 import { Tabs } from '@ant-design/react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
