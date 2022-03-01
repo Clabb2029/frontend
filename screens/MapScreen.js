@@ -71,8 +71,6 @@ export default function MapScreen(props) {
   const [ponctuelle, setPonctuelle] = useState(false);
   const [reguliere, setReguliere] = useState(false);
 
-
-
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
@@ -189,8 +187,8 @@ export default function MapScreen(props) {
                 <ListItem.Title style={styles.text}>
                   User D
                 </ListItem.Title>
-                <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 5, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-                  onPress={() => props.navigation.navigate('ProfilScreen')} />
+                <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+                  onPress={() => props.navigation.navigate('ProfilScreen', {userID : "621ceaf3dbf113fb8a25dd26"})} />
               </ListItem.Content>
             </ListItem>
             <ListItem bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
@@ -200,7 +198,17 @@ export default function MapScreen(props) {
                   User D
                 </ListItem.Title>
                 <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-                  onPress={() => props.navigation.navigate('ProfilScreen')} />
+                  onPress={() => props.navigation.navigate('ProfilScreen', {userID : "621cd647983d6214027fd4d1" })} />
+              </ListItem.Content>
+            </ListItem>
+            <ListItem bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+              <ListItem.Content style={{ flexDirection: 'row' }}>
+                <ListItem.Title style={styles.text}>
+                  Kéo
+                </ListItem.Title>
+                <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+                  onPress={() => props.navigation.navigate('ProfilScreen', {userID : "621dda7dc37116864d82dc1d" })} />
               </ListItem.Content>
             </ListItem>
           </View>

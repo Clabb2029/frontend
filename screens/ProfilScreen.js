@@ -3,7 +3,7 @@ import { Tabs } from '@ant-design/react-native';
 import { Badge, ListItem } from 'react-native-elements';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 
@@ -27,7 +27,7 @@ import {
 } from '@expo-google-fonts/alegreya-sans';
 
 
-export default function ProfilScreen(props) {
+export default function ProfilScreen({route}) {
   let [fontsLoaded] = useFonts({
     AlegreyaSans_100Thin,
     AlegreyaSans_100Thin_Italic,
@@ -44,6 +44,68 @@ export default function ProfilScreen(props) {
     AlegreyaSans_900Black,
     AlegreyaSans_900Black_Italic,
   });
+
+  // Récupération des données du profil :
+ const [user, setUser] = useState({})
+ const [userData, setUserData] = useState([])
+ const { userID } = route.params;
+
+useEffect(() => {
+ const loadData = async  () => {
+   const rawData = await fetch(`http://192.168.1.5:3000/users/${userID}`);
+   const data = await rawData.json();
+   setUser(data.userInfo)
+   setUserData(data.reviews)
+ }
+ loadData();
+}, []);
+console.log(userData.length)
+
+// Calcul de la moyenne des notes
+var totalRate = 0;
+var averageRate =[]
+for (var j = 0; j< userData.length; j++){
+  totalRate += userData[j].rate
+  var average = Math.round( totalRate / userData.length);
+}
+for (var j = 0; j < 5; j++) {
+  var color = {};
+  if (j < average) {
+    color = '#D35400' 
+  } else {color = '#2C3E50' }
+  averageRate.push(<FontAwesome name="star" size={24} color={color} />)
+}
+console.log(average)
+
+// Eléments à injecter dans l'onglet Avis
+var noReviews = "";
+if (userData.length === 0){
+  noReviews = "Pas encore d'avis !"
+ }
+let userReviews = userData.map((review, i) => {
+  // Notes
+var rating = []
+for (var j = 0; j < 5; j++) {
+  var color = {};
+  if (j < review.rate) {
+    color = '#D35400' 
+  } else {color = '#2C3E50' }
+  rating.push(<FontAwesome name="star" size={24} color={color} />)
+}
+  return (
+<ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+    <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+    <ListItem.Content>
+      <ListItem.Title style={styles.h6}>
+        {review.pseudo_sender}
+      </ListItem.Title>
+      <View style={{ flexDirection: 'row' }}>
+        {rating}
+      </View>
+      <ListItem.Subtitle style={styles.textReview}>{review.message}</ListItem.Subtitle>
+    </ListItem.Content>
+  </ListItem>)
+})
 
   // Elements à injecter dans le caroussel d'images
   const isCarousel = useRef(null)
@@ -80,12 +142,6 @@ export default function ProfilScreen(props) {
     { title: 'Avis', icon: "pencil-alt" },
   ];
 
-  // Listes d'avis
-  const reviews = [
-    { userName: 'User A', avatar: require('../assets/avatar.png'), text: "lorem ipsum, bla bla bla kikou c'est moi et j'aime la vie quand il y a du soleil" },
-    { userName: 'User C', avatar: require('../assets/avatar.png'), text: "lorem ipsum, bla bla bla kikou c'est moi et j'aime la vie quand il y a du soleil" },
-    { userName: 'User B', avatar: require('../assets/avatar.png'), text: "lorem ipsum, bla bla bla kikou c'est moi et j'aime la vie quand il y a du soleil" }
-  ]
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
@@ -138,25 +194,19 @@ export default function ProfilScreen(props) {
         >
           {/* Tab infos :           */}
           <View style={styles.tab}>
-            <Text style={styles.h6}>Profil de Clabb</Text>
+            <Text style={styles.h6}>Profil de {user.pseudo}</Text>
             <View style={styles.buttonRight}>
               <FontAwesome name="envelope" size={25} color="#2C3E50" style={{ marginRight: 15 }} />
               <MaterialCommunityIcons name="account-star" size={29} color="#2C3E50" style={{ marginRight: 10 }} />
             </View>
             <View style={styles.star}>
-              <FontAwesome name="star" size={24} color="#D35400" />
-              <FontAwesome name="star" size={24} color="#D35400" />
-              <FontAwesome name="star" size={24} color="#D35400" />
-              <FontAwesome name="star" size={24} color="#D35400" />
-              <FontAwesome name="star" size={24} color="#2C3E50" />
+              {averageRate}
             </View>
             <Text style={styles.h6}>Description :</Text>
-            <Text style={styles.text}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Text>
+            <Text style={styles.text}>{user.description}</Text>
             <Text style={styles.h6}>Type de Garde souhaitée : </Text>
             <View >
-              <Badge value="Régulière" badgeStyle={styles.badge}>
-              </Badge>
-              <Badge value="Ponctuelle" badgeStyle={styles.badge}>
+              <Badge value={user.guardType} badgeStyle={styles.badge}>
               </Badge>
             </View>
             <Text style={styles.h6}>Disponibilité souhaitée :</Text>
@@ -195,23 +245,8 @@ export default function ProfilScreen(props) {
           {/* Tab Avis : */}
           <View style={styles.tab}>
             <ScrollView>
-              {reviews.map((l, i) => (
-                <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-                  <Image source={l.avatar} style={styles.avatarItem}></Image>
-                  <ListItem.Content>
-                    <ListItem.Title style={styles.h6}>
-                      {l.userName}
-                    </ListItem.Title>
-                    <View style={{ flexDirection: 'row' }}>
-                      <FontAwesome name="star" size={24} color="#D35400" />
-                      <FontAwesome name="star" size={24} color="#D35400" />
-                      <FontAwesome name="star" size={24} color="#D35400" />
-                      <FontAwesome name="star" size={24} color="#D35400" />
-                      <FontAwesome name="star" size={24} color="#2C3E50" />
-                    </View>
-                    <ListItem.Subtitle style={styles.textReview}>{l.text}</ListItem.Subtitle>
-                  </ListItem.Content>
-                </ListItem>))}
+              {userReviews}
+              <Text style={styles.noreviews}>{noReviews}</Text>
             </ScrollView>
 
           </View>
@@ -283,6 +318,15 @@ const styles = StyleSheet.create({
   textReview: {
     fontFamily: 'AlegreyaSans_400Regular',
     color: '#2C3E50',
+  },
+  noreviews: {
+    color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10
   },
   containerCarousel: {
     backgroundColor: 'white',
