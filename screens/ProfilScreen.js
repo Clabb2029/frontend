@@ -46,20 +46,21 @@ export default function ProfilScreen({route}) {
   });
 
   // Récupération des données du profil :
- const [user, setUser] = useState({})
+ const [reviewSender, setReviewSender] = useState([])
  const [userData, setUserData] = useState([])
+ const [userInfo, setUserInfo] = useState([])
  const { userID } = route.params;
 
 useEffect(() => {
  const loadData = async  () => {
-   const rawData = await fetch(`http://192.168.1.5:3000/users/${userID}`);
+   const rawData = await fetch(`http://172.16.190.12:3000/users/${userID}`);
    const data = await rawData.json();
-   setUser(data.userInfo)
    setUserData(data.reviews)
+   setUserInfo(data.userInfo)
+   setReviewSender(data.reviewSender)
  }
  loadData();
 }, []);
-console.log(userData.length)
 
 // Calcul de la moyenne des notes
 var totalRate = 0;
@@ -75,14 +76,13 @@ for (var j = 0; j < 5; j++) {
   } else {color = '#2C3E50' }
   averageRate.push(<FontAwesome name="star" size={24} color={color} />)
 }
-console.log(average)
 
 // Eléments à injecter dans l'onglet Avis
 var noReviews = "";
 if (userData.length === 0){
   noReviews = "Pas encore d'avis !"
  }
-let userReviews = userData.map((review, i) => {
+let userReviews = reviewSender.map((review, i) => {
   // Notes
 var rating = []
 for (var j = 0; j < 5; j++) {
@@ -97,7 +97,7 @@ for (var j = 0; j < 5; j++) {
     <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
     <ListItem.Content>
       <ListItem.Title style={styles.h6}>
-        {review.pseudo_sender}
+        {review.id_sender.pseudo}
       </ListItem.Title>
       <View style={{ flexDirection: 'row' }}>
         {rating}
@@ -194,7 +194,7 @@ for (var j = 0; j < 5; j++) {
         >
           {/* Tab infos :           */}
           <View style={styles.tab}>
-            <Text style={styles.h6}>Profil de {user.pseudo}</Text>
+            <Text style={styles.h6}>Profil de {userInfo.pseudo}</Text>
             <View style={styles.buttonRight}>
               <FontAwesome name="envelope" size={25} color="#2C3E50" style={{ marginRight: 15 }} />
               <MaterialCommunityIcons name="account-star" size={29} color="#2C3E50" style={{ marginRight: 10 }} />
@@ -203,10 +203,10 @@ for (var j = 0; j < 5; j++) {
               {averageRate}
             </View>
             <Text style={styles.h6}>Description :</Text>
-            <Text style={styles.text}>{user.description}</Text>
+            <Text style={styles.text}>{userInfo.description}</Text>
             <Text style={styles.h6}>Type de Garde souhaitée : </Text>
             <View >
-              <Badge value={user.guardType} badgeStyle={styles.badge}>
+              <Badge value={userInfo.guardType} badgeStyle={styles.badge}>
               </Badge>
             </View>
             <Text style={styles.h6}>Disponibilité souhaitée :</Text>

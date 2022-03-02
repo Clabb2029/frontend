@@ -1,7 +1,8 @@
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image, TextInput } from 'react-native';
 import { Tabs } from '@ant-design/react-native';
-import { ListItem, Button } from 'react-native-elements';
-import { FontAwesome } from '@expo/vector-icons';
+import { ListItem, Button, Overlay, Rating, } from 'react-native-elements';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
 
 import AppLoading from 'expo-app-loading';
 import {
@@ -21,6 +22,12 @@ import {
   AlegreyaSans_900Black,
   AlegreyaSans_900Black_Italic,
 } from '@expo-google-fonts/alegreya-sans';
+
+// Mise en forme des dates
+let dateFormat = function (date) {
+  var dates = new Date(date);
+  return dates.toLocaleDateString("fr")
+}
 
 export default function ProfilScreen(props) {
   let [fontsLoaded] = useFonts({
@@ -46,12 +53,163 @@ export default function ProfilScreen(props) {
     { title: 'Demandes', icon: "hourglass-half" },
   ];
 
-  // Listes date
-  const reviews = [
-    { userName: 'User A', avatar: require('../assets/avatar.png'), date: "Du 11/02/2022 au 15/02/2022" },
-    { userName: 'User C', avatar: require('../assets/avatar.png'), date: "Du 11/02/2022 au 15/02/2022" },
-    { userName: 'User B', avatar: require('../assets/avatar.png'), date: "Du 11/02/2022 au 15/02/2022" }
-  ]
+  // Récupération de l'agenda
+
+  const [agendaInfo, setAgendaInfo] = useState([])
+
+  useEffect(() => {
+    const loadData = async () => {
+      const rawData = await fetch('http://172.16.190.12:3000/agenda');
+      const data = await rawData.json();
+      setAgendaInfo(data.agendaInfo)
+    }
+    loadData();
+  }, []);
+console.log(agendaInfo)
+  // Affichage overlay pour donner son avis
+  const [rate, setRate] = useState(0)
+  const [visible, setVisible] = useState(false);
+  const [avis, setAvis] = useState('')
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
+  const ratingCompleted = (rating) => {
+    console.log('Rating is: ' + rating);
+    setRate(rating)
+  };
+
+  // Affichage des dates 
+  // gardes effectuées :
+  var agendaList = agendaInfo.map((date, i) => {
+    if (date.status == "Validé" && new Date(date.beginning) < new Date()) {
+      return (<ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <ListItem.Content>
+          <ListItem.Title style={styles.h6}>
+            {date.id_sender.pseudo}
+          </ListItem.Title>
+          <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
+        </ListItem.Content>
+        <ListItem.Content right>
+          <MaterialCommunityIcons name="comment-edit" size={30} color="#2C3E50" style={{ marginRight: 20 }} onPress={toggleOverlay} />
+          <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 450 }}>
+            <Text style={styles.textOverlay}>Avis sur votre garde : </Text>
+            <Rating
+              showRating
+              type="custom"
+              ratingColor="#D35400"
+              startingValue={3}
+              imageSize={40}
+              defaultRating={3}
+              onFinishRating={ratingCompleted}
+              style={{ paddingVertical: 10 }}
+            /><ScrollView>
+              <TextInput
+                placeholder='Avis'
+                multiline
+                style={{fontFamily:'AlegreyaSans_400Regular', color:"#2C3E50"}}
+                onChangeText={(value) => setAvis(value)}
+                value={avis} />
+            </ScrollView>
+            <Button
+              title="Ajouter un avis"
+              buttonStyle={{
+                backgroundColor: '#D35400',
+                borderRadius: 3,
+              }}
+              titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+              onPress={async () => {
+                toggleOverlay()
+                await fetch('http://172.16.190.12:3000/add-review/', {
+                  method: "POST",
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: `id_sender=${date.id_receiver}&id_receiver=${date.id_sender._id}&message=${avis}&rate=${Number(rate)}`
+                })
+                setAvis()
+              }}
+            />
+            <Button
+              title="Fermer"
+              buttonStyle={{
+                backgroundColor:"#2C3E50",
+                borderRadius: 3,
+              }}
+              containerStyle={{marginTop:10}}
+              titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+              onPress={ () => {
+                toggleOverlay()
+              }}
+            />
+          </Overlay>
+          <ListItem.Subtitle right style={styles.rate}>Evaluer la garde</ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem>)
+    }
+  })
+  // gardes à faire :
+  var todoList = agendaInfo.map((date, j) => {
+    if (date.status == "Validé" && new Date(date.beginning) > new Date()) {
+      return (<ListItem key={j} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <ListItem.Content>
+          <ListItem.Title style={styles.h6}>
+            {date.id_sender.pseudo}
+          </ListItem.Title>
+          <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem>
+      )
+    }
+  })
+  // gardes en attente :
+  var pendingList = agendaInfo.map((date, k) => {
+    let agendaID = date._id;
+    if (date.status == "En Attente" || date.status == "En attente") {
+      return (
+        <ListItem key={k} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+          <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+          <ListItem.Content>
+            <ListItem.Title style={styles.h6}>
+              {date.id_sender.pseudo}
+            </ListItem.Title>
+            <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
+            <View style={{ flexDirection: 'row' }}>
+              <Button title="Accepter"
+                onPress={async () => {
+                  const request = await fetch('http://172.16.190.12:3000/agenda/', {
+                    method: "PUT",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${agendaID}&status=Validé`
+                  })
+                  const data = await request.json()
+                  if (data.result == true) {
+                    setAgendaInfo([...agendaInfo, { date }])
+                  }
+                  console.log(setAgendaInfo)
+                }}
+                buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
+                containerStyle={{ width: 100, marginRight: 25, marginVertical: 10 }}
+                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
+              <Button title="Refuser"
+                onPress={async () => {
+                  await fetch('http://172.16.190.12:3000/agenda/', {
+                    method: "PUT",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${agendaID}&status=Refusé`
+                  })
+
+                }}
+                buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
+                containerStyle={{ width: 100, marginRight: 15, marginVertical: 10 }}
+                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
+            </View>
+          </ListItem.Content>
+        </ListItem>
+      )
+    }
+  })
+
+
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
@@ -100,40 +258,19 @@ export default function ProfilScreen(props) {
             </View>
           )}
         >
-          {/* Tab infos :           */}
+          {/* Tab Calendrier :           */}
           <View style={styles.tab}>
-            <Text style={styles.h6}>Gardes passées</Text>
             <ScrollView>
-              {reviews.map((l, i) => (
-                <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-                  <Image source={l.avatar} style={styles.avatarItem}></Image>
-                  <ListItem.Content>
-                    <ListItem.Title style={styles.h6}>
-                      {l.userName}
-                    </ListItem.Title>
-                    <ListItem.Subtitle style={styles.text}>{l.date}</ListItem.Subtitle>
-                  </ListItem.Content>
-                </ListItem>))}        
-            <Text style={styles.h6}>Gardes à venir</Text>
+              <Text style={styles.h6}>Gardes passées</Text>
+              {agendaList}
+              <Text style={styles.h6}>Gardes à venir</Text>
+              {todoList}
             </ScrollView>
           </View>
 
           {/* Tab demandes en attente : */}
           <View style={styles.tab}>
-            <ListItem bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
-              <ListItem.Content>
-                <ListItem.Title style={styles.h6}>
-                  User D
-                </ListItem.Title>
-                <ListItem.Subtitle style={styles.text}>Du 07/04/22 au 15/04/22</ListItem.Subtitle>
-                <View style={{flexDirection:'row'}}>
-                <Button title="Accepter" buttonStyle={{backgroundColor:"#2C3E50", borderRadius:3}} containerStyle={{width: 100, marginRight: 25, marginVertical:10}} titleStyle={{fontFamily:'AlegreyaSans_500Medium', fontSize:20}}/>
-                <Button title="Refuser" buttonStyle={{backgroundColor:"#2C3E50", borderRadius:3}} containerStyle={{width: 100, marginRight: 15, marginVertical:10}} titleStyle={{fontFamily:'AlegreyaSans_500Medium', fontSize:20}}/>
-                </View>
-              </ListItem.Content>
-            </ListItem>
-
+            {pendingList}
           </View>
         </Tabs>
       </View>
@@ -175,9 +312,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 10
   },
+  textOverlay: {
+    color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    textAlign: 'center',
+    fontSize: 20
+  },
   text: {
     color: '#2C3E50',
-    marginLeft: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    fontFamily: 'AlegreyaSans_400Regular'
+  },
+  rate: {
+    color: '#2C3E50',
+    fontSize: 12,
+    textAlign: 'center',
+    marginLeft: 10,
     marginRight: 10,
     fontFamily: 'AlegreyaSans_400Regular'
   },
