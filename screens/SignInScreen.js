@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
-import { CheckBox, Icon, Switch } from 'react-native-elements';
+import { CheckBox, SocialIcon,Icon, Switch } from 'react-native-elements';
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
@@ -27,15 +27,23 @@ function SocialMediaButtons(props) {
   };
   return (
       <>
-          <CustomButton text="Sign In With Google" onPress={onGoogleSignInPressed}
-          bgColor='#FAE9EA'
-          fgColor="#DD4D44"
-          />
-          <CustomButton text="Sign In with FaceBook" onPress={onFacebookSingInPressed}
-           bgColor='#E7EAF4'
-           fgColor="#4769A9"
-          />
-      </>
+    <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              button
+              title="Sign In facebook"
+              type="facebook"
+              onPress={onFacebookSingInPressed}
+            />
+          </View>
+          <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              title="Sign In Google Plus"
+              button
+              type="google-plus-official"
+              onPress={onGoogleSignInPressed}
+            />
+          </View>
+          </>
   );
 }
 
@@ -102,7 +110,6 @@ function CheckoxScreen(props) {
 };
  
 export default function SignInScreen(props) {
-  const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -119,9 +126,12 @@ const onSingInPressed = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>CONNECTION</Text>
-    <SocialMediaButtons/>
+      
+    <SocialMediaButtons />
+    <View style={styles.inputButton}>
     <CustomInputs placeholder="Email" value={email} setValue={setEmail}/>
     <CustomInputs placeholder="Password" value={password} setValue={setPassword} secureTextEntry />
+    </View>
     <CustomButton text="SE CONNECTER" onPress={() => props.navigation.navigate('BottomNavigator')} />
     </View>
   );
@@ -133,6 +143,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    width: "100%",
+    padding: 10,
+  },
+
+  inputButton: {
+    marginTop: 20,
+    marginBottom: 20,
+    width: "100%",
+  
   },
   containerCheckbox: {
     flexDirection: 'row',
@@ -145,6 +164,8 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 10,
     marginVertical: 1,
+    marginTop: 5,
+    marginBottom: 5,
     alignItems: 'center',
     borderRadius: 10
 },
@@ -166,17 +187,17 @@ text_TERTIARY: {
 },
 
 containerInput: {
-  backgroundColor: "#fff",
   width: "100%",
   padding: 10,
+  backgroundColor: "#fff",
   borderColor: "#e8e8e8",
   borderWidth: 1,
   borderRadius: 5,
-  paddingHorizontal: 10,
-  marginVertical: 5
+
 },
 container: {
   alignItems: 'center',
+  width: "100%",
   padding: 50
 },
 title: {
