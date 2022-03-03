@@ -174,7 +174,7 @@ export default function ProfilScreen(props) {
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
                 <View style={{ flexDirection: 'row' }}>
-                  <Button title="Accepter"
+                  <Button title="ACCEPTER"
                     onPress={async () => {
                       const request = await fetch('http://192.168.1.5:3000/agenda/', {
                         method: "PUT",
@@ -193,7 +193,7 @@ export default function ProfilScreen(props) {
                     buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
                     containerStyle={{ width: 100, marginRight: 25, marginVertical: 10 }}
                     titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
-                  <Button title="Refuser"
+                  <Button title="REFUSER"
                     onPress={async () => {
                       const request = await fetch('http://192.168.1.5:3000/agenda/', {
                         method: "PUT",
