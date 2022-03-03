@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
-import { CheckBox, Icon, Switch } from 'react-native-elements';
+import { CheckBox, Icon, Switch, SocialIcon } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
@@ -28,15 +30,23 @@ function SocialMediaButtons(props) {
   };
   return (
       <>
-          <CustomButton text="Sign In With Google" onPress={onGoogleSignInPressed}
-          bgColor='#FAE9EA'
-          fgColor="#DD4D44"
-          />
-          <CustomButton text="Sign In with FaceBook" onPress={onFacebookSingInPressed}
-           bgColor='#E7EAF4'
-           fgColor="#4769A9"
-          />
-      </>
+    <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              button
+              title="Sign Up facebook"
+              type="facebook"
+              onPress={onFacebookSingInPressed}
+            />
+          </View>
+          <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              title="Sign Up Google Plus"
+              button
+              type="google-plus-official"
+              onPress={onGoogleSignInPressed}
+            />
+          </View>
+          </>
   );
 }
 
@@ -121,7 +131,7 @@ const onSingInPressed = () => {
 };
 
   return (
-    <>
+    <SafeAreaView style={styles.container}>
     <Text style={styles.title}>Inscription</Text>
     <SocialMediaButtons/>
     <CustomInputs placeholder="Pseudo" value={pseudo} setValue={setPseudo}/>
@@ -132,17 +142,20 @@ const onSingInPressed = () => {
     <View style={styles.souhait}>
     <Text style={styles.subtile}>Je veux:</Text>
     <CheckoxScreen />
+    <View style={styles.souhaitToogle}>
     <Text style={styles.subtile}>J'accepte de reçevoir des mails de la part de petFriends</Text>
     <SwitchButton />
-    <CustomButton text="SUIVANT" onPress={onRegisterPressed} />
     </View>
-</>
+    </View>
+    <CustomButton text="SUIVANT" onPress={() => props.navigation.navigate('MoreInfoScreen')} />
+</SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -153,6 +166,10 @@ const styles = StyleSheet.create({
     padding: 1,
     marginVertical: 1,
     marginTop: 15,
+  },
+
+  souhaitToogle: {
+    flexDirection: "row"
   },
   containerButton: {
     width: "100%",
@@ -190,7 +207,7 @@ containerInput: {
 },
 container: {
   alignItems: 'center',
-  padding: 50
+  padding: 10
 },
 title: {
   padding: 35,
