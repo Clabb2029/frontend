@@ -1,12 +1,7 @@
 import * as React from 'react'
-import { StyleSheet, Text, View, Image, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
 import chatRoomsData from '../assets/chatrooms'
 
-
-let dateFormat = function (date) {
-  var dates = new Date(date);
-  return dates.toLocaleDateString("fr")
-  }
 
 export default function ConversationsScreen(props) { 
 
@@ -18,6 +13,7 @@ export default function ConversationsScreen(props) {
         </View>
 
         <FlatList
+        style={styles.flatlist}
           data = {chatRoomsData}
           renderItem= {({item}) =>       
           <View style={styles.message}>    
@@ -46,7 +42,7 @@ export default function ConversationsScreen(props) {
 
 
 const styles = StyleSheet.create({
-
+  
   container: {
     width: '100%',
     height: '100%',
@@ -64,6 +60,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
 
+  flatlist: {
+    marginBottom: 50
+  },
+
   message: {
     flexDirection: 'row',
     padding: 10,
@@ -73,6 +73,47 @@ const styles = StyleSheet.create({
 
   image: {
     height: 50,
+    width: 50,
+    borderRadius: 30,
+    marginRight: 10
   },
+
+  badgeContainer: {
+    backgroundColor: '#D35400',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    left: 45,
+    top: 10
+  },
+
+  badgeText: {
+    color: 'white',
+    fontSize: 12
+  },
+
+  rightContainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',    
+  },
+
+  name: {
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+
+  text: {
+    color:'grey'
+  }
 
 })

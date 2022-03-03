@@ -143,4 +143,20 @@ export default [{
       content: 'Meet me at the same place',
       createdAt: '2020-09-25T15:40:00.000Z',
     },
+  }, {
+    id: '10',
+    users: [{
+      id: 'u1',
+      name: 'Vadim',
+      imageUri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/vadim.jpg',
+    }, {
+      id: 'u11',
+      name: 'Angelina Jolie',
+      imageUri: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/4.jpg',
+    }],
+    lastMessage: {
+      id: 'm10',
+      content: 'Meet me at the same place',
+      createdAt: '2020-09-25T15:40:00.000Z',
+    },
   }]
