@@ -59,13 +59,13 @@ export default function ProfilScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch('http://172.16.190.12:3000/agenda');
+      const rawData = await fetch('http://192.168.1.5:3000/agenda');
       const data = await rawData.json();
       setAgendaInfo(data.agendaInfo)
     }
     loadData();
   }, []);
-console.log(agendaInfo)
+
   // Affichage overlay pour donner son avis
   const [rate, setRate] = useState(0)
   const [visible, setVisible] = useState(false);
@@ -120,7 +120,7 @@ console.log(agendaInfo)
               titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
               onPress={async () => {
                 toggleOverlay()
-                await fetch('http://172.16.190.12:3000/add-review/', {
+                await fetch('http://192.168.1.5:3000/add-review/', {
                   method: "POST",
                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                   body: `id_sender=${date.id_receiver}&id_receiver=${date.id_sender._id}&message=${avis}&rate=${Number(rate)}`
@@ -162,53 +162,63 @@ console.log(agendaInfo)
     }
   })
   // gardes en attente :
-  var pendingList = agendaInfo.map((date, k) => {
-    let agendaID = date._id;
-    if (date.status == "En Attente" || date.status == "En attente") {
-      return (
-        <ListItem key={k} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-          <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
-          <ListItem.Content>
-            <ListItem.Title style={styles.h6}>
-              {date.id_sender.pseudo}
-            </ListItem.Title>
-            <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
-            <View style={{ flexDirection: 'row' }}>
-              <Button title="Accepter"
-                onPress={async () => {
-                  const request = await fetch('http://172.16.190.12:3000/agenda/', {
-                    method: "PUT",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${agendaID}&status=Validé`
-                  })
-                  const data = await request.json()
-                  if (data.result == true) {
-                    setAgendaInfo([...agendaInfo, { date }])
-                  }
-                  console.log(setAgendaInfo)
-                }}
-                buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
-                containerStyle={{ width: 100, marginRight: 25, marginVertical: 10 }}
-                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
-              <Button title="Refuser"
-                onPress={async () => {
-                  await fetch('http://172.16.190.12:3000/agenda/', {
-                    method: "PUT",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${agendaID}&status=Refusé`
-                  })
+   var pendingList = agendaInfo.map((date, k) => {
+        let agendaID = date._id;
+        if (date.status == "En Attente" || date.status == "En attente") {
+          return (
+            <ListItem key={k} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+              <ListItem.Content>
+                <ListItem.Title style={styles.h6}>
+                  {date.id_sender.pseudo}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
+                <View style={{ flexDirection: 'row' }}>
+                  <Button title="Accepter"
+                    onPress={async () => {
+                      const request = await fetch('http://192.168.1.5:3000/agenda/', {
+                        method: "PUT",
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `id=${agendaID}&status=Validé`
+                      })
+                      const data = await request.json()
 
-                }}
-                buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
-                containerStyle={{ width: 100, marginRight: 15, marginVertical: 10 }}
-                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
-            </View>
-          </ListItem.Content>
-        </ListItem>
-      )
-    }
-  })
-
+                      if (data.result == true) {
+                        var newAgenda = [...agendaInfo, data.agendaUpdate ]
+                        var dateList = newAgenda.filter((date) => date._id != data.agendaUpdate._id  )
+                        dateList.push(data.agendaUpdate)
+                        setAgendaInfo(dateList)
+                      }
+                    }}
+                    buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
+                    containerStyle={{ width: 100, marginRight: 25, marginVertical: 10 }}
+                    titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
+                  <Button title="Refuser"
+                    onPress={async () => {
+                      const request = await fetch('http://192.168.1.5:3000/agenda/', {
+                        method: "PUT",
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `id=${agendaID}&status=Refusé`
+                      })
+                      const data = await request.json()
+    
+                      if (data.result == true) {
+                        var newAgenda = [...agendaInfo, data.agendaUpdate ]
+                        var dateList = newAgenda.filter((date) => date._id != data.agendaUpdate._id  )
+                        setAgendaInfo(dateList)
+                      }
+                    }}
+                    buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
+                    containerStyle={{ width: 100, marginRight: 15, marginVertical: 10 }}
+                    titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
+                    
+                </View>
+              </ListItem.Content>
+            </ListItem>
+            
+          )
+        }
+      })
 
   if (!fontsLoaded) {
     return <AppLoading />;

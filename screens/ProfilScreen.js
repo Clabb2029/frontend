@@ -53,7 +53,7 @@ export default function ProfilScreen({route}) {
 
 useEffect(() => {
  const loadData = async  () => {
-   const rawData = await fetch(`http://172.16.190.12:3000/users/${userID}`);
+   const rawData = await fetch(`http:/192.168.1.5:3000/users/${userID}`);
    const data = await rawData.json();
    setUserData(data.reviews)
    setUserInfo(data.userInfo)
