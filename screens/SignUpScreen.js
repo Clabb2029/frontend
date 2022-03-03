@@ -96,8 +96,8 @@ function CheckoxScreen(props) {
         title="Garder"
         checkedIcon="dot-circle-o"
         uncheckedIcon="circle-o"
-        checked={check2}
-        onPress={() => setCheck1(!check2)}
+        checked={check1}
+        onPress={() => setCheck1(!check1)}
       />
        <CheckBox
         center

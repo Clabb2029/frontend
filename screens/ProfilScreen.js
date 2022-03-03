@@ -53,7 +53,11 @@ export default function ProfilScreen({route}) {
 
 useEffect(() => {
  const loadData = async  () => {
+<<<<<<< HEAD
    const rawData = await fetch(`http://192.168.165.114:3000/users/${userID}`);
+=======
+   const rawData = await fetch(`http://192.168.1.5:3000/users/${userID}`);
+>>>>>>> mapscreen
    const data = await rawData.json();
    setUserData(data.reviews)
    setUserInfo(data.userInfo)
@@ -82,7 +86,7 @@ var noReviews = "";
 if (userData.length === 0){
   noReviews = "Pas encore d'avis !"
  }
-let userReviews = reviewSender.map((review, i) => {
+let userReviews = reviewSender.map((review, e) => {
   // Notes
 var rating = []
 for (var j = 0; j < 5; j++) {
@@ -93,7 +97,7 @@ for (var j = 0; j < 5; j++) {
   rating.push(<FontAwesome name="star" size={24} color={color} />)
 }
   return (
-<ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+<ListItem key={e} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
     <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
     <ListItem.Content>
       <ListItem.Title style={styles.h6}>
