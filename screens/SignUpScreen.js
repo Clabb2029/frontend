@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
-import { CheckBox, Icon, Switch } from 'react-native-elements';
+import { CheckBox, Icon, Switch, SocialIcon } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
@@ -28,15 +30,23 @@ function SocialMediaButtons(props) {
   };
   return (
       <>
-          <CustomButton text="Sign In With Google" onPress={onGoogleSignInPressed}
-          bgColor='#FAE9EA'
-          fgColor="#DD4D44"
-          />
-          <CustomButton text="Sign In with FaceBook" onPress={onFacebookSingInPressed}
-           bgColor='#E7EAF4'
-           fgColor="#4769A9"
-          />
-      </>
+    <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              button
+              title="Sign Up facebook"
+              type="facebook"
+              onPress={onFacebookSingInPressed}
+            />
+          </View>
+          <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              title="Sign Up Google Plus"
+              button
+              type="google-plus-official"
+              onPress={onGoogleSignInPressed}
+            />
+          </View>
+          </>
   );
 }
 
@@ -53,54 +63,7 @@ function CustomInputs({value, setValue, placeholder, secureTextEntry}) {
   );
 }
 
-function SwitchButton (props) {
-  const [checked, setChecked] = useState(false);
 
-  const toggleSwitch = () => {
-    setChecked(!checked);
-  };
-
-  return (
-    <View style={styles.view}>
-     <Switch
-        value={checked}
-        onValueChange={(value) => setChecked(value)}
-      />
-    </View>
-  );
-}
-
-function CheckoxScreen(props) {
-  const [check1, setCheck1] = useState(false);
-  const [check2, setCheck2] = useState(false);
-  
-
-  const onCheckedChange = (isChecked) => {
-    console.log("yay")
-  };
-
-  return (
-    <View style={styles.containerCheckbox}>
-      <CheckBox
-        center
-        title="Garder"
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
-        checked={check2}
-        onPress={() => setCheck1(!check2)}
-      />
-       <CheckBox
-        center
-        title="Faire Garder"
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
-        checked={check2}
-        onPress={() => setCheck2(!check2)}
-      />
-    </View>
-
-  );
-};
  
 
 export default function SignUpScreen(props) {
@@ -108,10 +71,20 @@ export default function SignUpScreen(props) {
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [status, setStatus] = useState('');
+  const [optinEmails, setOptinEmails] = useState(false)
 
-  const onRegisterPressed = () => {
-    console.warn("Sign In")
-};
+  // Toggle emails
+  const [checked, setChecked] = useState(false);
+  
+      if(checked == true){
+      setOptinEmails(true)
+    }
+
+   // Statut Proprio vs Sitter
+    const [check1, setCheck1] = useState(true);
+
+
 const onForgotPasswordPressed = () => {
     console.warn('Your password')
 };
@@ -121,7 +94,7 @@ const onSingInPressed = () => {
 };
 
   return (
-    <>
+    <SafeAreaView style={styles.container}>
     <Text style={styles.title}>Inscription</Text>
     <SocialMediaButtons/>
     <CustomInputs placeholder="Pseudo" value={pseudo} setValue={setPseudo}/>
@@ -131,18 +104,55 @@ const onSingInPressed = () => {
     <CustomButton text="Have an Account? Sign In Here" onPress={onSingInPressed} type="TERTIARY" />
     <View style={styles.souhait}>
     <Text style={styles.subtile}>Je veux:</Text>
-    <CheckoxScreen />
+    <View style={styles.containerCheckbox}>
+        <CheckBox
+          center
+          title="Garder"
+          checkedIcon="dot-circle-o"
+          uncheckedIcon="circle-o"
+          checked={check1}
+          onPress={() => setCheck1(!check1)}
+        />
+         <CheckBox
+          center
+          title="Faire Garder"
+          checkedIcon="dot-circle-o"
+          uncheckedIcon="circle-o"
+          checked={!check1}
+          onPress={() => setCheck1(!check1)}
+        />
+      </View>
+    <View style={styles.souhaitToogle}>
     <Text style={styles.subtile}>J'accepte de reçevoir des mails de la part de petFriends</Text>
-    <SwitchButton />
-    <CustomButton text="SUIVANT" onPress={onRegisterPressed} />
+    <View style={styles.view}>
+       <Switch
+          value={checked}
+          onValueChange={(value) => setChecked(value)}
+        />
+      </View>
     </View>
-</>
+    </View>
+    <CustomButton text="S'inscrire" 
+        onPress={async () => {
+        const request = await fetch('http://172.16.190.7:3000/users/signup', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `pseudo=${pseudo}&email=${email}&password=${password}&check1=${check1}&optinEmails=${optinEmails}`
+      })
+       const data = await request.json()
+       if (data.result){
+        props.navigation.navigate('MoreInfoScreen', { token: data.token })
+       }
+    }}
+      />
+</SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -153,6 +163,10 @@ const styles = StyleSheet.create({
     padding: 1,
     marginVertical: 1,
     marginTop: 15,
+  },
+
+  souhaitToogle: {
+    flexDirection: "row"
   },
   containerButton: {
     width: "100%",
@@ -190,7 +204,7 @@ containerInput: {
 },
 container: {
   alignItems: 'center',
-  padding: 50
+  padding: 10
 },
 title: {
   padding: 35,

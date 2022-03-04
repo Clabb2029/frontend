@@ -30,8 +30,10 @@ export default function HomeScreen(props) {
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={require('../assets/petfriends-logo.png')} resizeMode={'contain'}/>
+      <View style={styles.buttonsContainer}>
       <CustomButton text="SE CONNECTER"  onPress={() => props.navigation.navigate('SignInScreen')} />
       <CustomButton text="S'INSCRIRE" onPress={() => props.navigation.navigate('SignUpScreen')} />
+    </View>
     </View>
   );
 }
@@ -45,10 +47,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 
-  containerButton: {
+  buttonsContainer: {
     width: "100%",
-    padding: 10,
-    marginVertical: 1,
+    padding: 20
+  },
+
+  containerButton: {
+    padding: 15,
+    marginVertical: 5,
     alignItems: 'center',
     borderRadius: 10,
 },

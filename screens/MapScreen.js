@@ -42,7 +42,7 @@ export default function MapScreen(props) {
     AlegreyaSans_900Black_Italic,
   });
 
-// Chargement de la map :
+  // Chargement de la map :
   const [currentLatitude, setCurrentLatitude] = useState(0);
   const [currentLongitude, setCurrentLongitude] = useState(0);
   useEffect(() => {
@@ -58,11 +58,25 @@ export default function MapScreen(props) {
     askPermissions();
   }, []);
 
-  // Overlay filtres : 
+  // Récupération des profils users (owner) : 
+  const [userOwnerData, setUserOwnerData] = useState([])
+
+  useEffect(() => {
+    const loadData = async () => {
+      const rawData = await fetch('http://172.16.190.7:3000/users-position');
+      const data = await rawData.json();
+      setUserOwnerData(data.usersOwner)
+    }
+    loadData();
+  }, []);
+
+
+  // Overlay et ses filtres : 
   const [visible, setVisible] = useState(false);
   const toggleOverlay = () => {
     setVisible(!visible);
   };
+
   const [chien, setChien] = useState(false);
   const [chat, setChat] = useState(false);
   const [cheval, setCheval] = useState(false);
@@ -70,15 +84,66 @@ export default function MapScreen(props) {
   const [autres, setAutres] = useState(false);
   const [ponctuelle, setPonctuelle] = useState(false);
   const [reguliere, setReguliere] = useState(false);
+  const [isChecked, setIsChecked] = useState([])
+
+  // Filtres des users :
+    dataFiltered = userOwnerData
+  if (chien == true){
+    var dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chien")
+  } 
+  if (chat == true){
+    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chat" )
+  } 
+  if (lapin == true){
+    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "lapin" )
+  } 
+  if (cheval == true){
+    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "cheval" )
+  } 
+  if (ponctuelle == true){
+    dataFiltered = userOwnerData.filter(guard => guard.guarType == "Ponctuelle")
+  }
+  if (reguliere == true){
+    dataFiltered = userOwnerData.filter(guard => guard.guardType == "Régulière" )
+  }
+
+  // Affichage des profils users : 
+  var userNear = dataFiltered.map((data, i) => {
+
+    return (
+      <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <ListItem.Content style={{ flexDirection: 'row' }}>
+          <ListItem.Title style={styles.text}>
+            {data.pseudo}
+          </ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Content right><Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+          onPress={() => props.navigation.navigate('ProfilScreen', { userID: data._id })} /></ListItem.Content>
+      </ListItem>
+    )
+  })
+
+  // Affichage des markers : 
+  var markerUsers = userOwnerData.map((user, j) => {
+    if (user.address.length > 0) {
+      return (
+          <Marker key={j} coordinate={{ latitude: user.address[0].latitude, longitude: user.address[0].longitude }}
+            title={user.pseudo}
+            pinColor='#D35400'
+          />
+      )
+    }
+  })
 
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
     return (
       <View style={styles.container}>
-        <Text style={styles.h6}>Utilisateurs à proximité :</Text>
+        <Text style={styles.h1}>Utilisateurs à proximité :</Text>
         {/* Affichage filtres et calendrier :         */}
-        <View style={{flexDirection:'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Button title="Ajouter des filtres"
             buttonStyle={{ borderColor: "#2C3E50", backgroundColor: "#ECF0F1", borderRadius: 3 }}
             type="outline"
@@ -94,7 +159,7 @@ export default function MapScreen(props) {
                 title="Chien"
                 textStyle={styles.textCheckbox}
                 checked={chien}
-                checkedColor = {'#D35400'}
+                checkedColor={'#D35400'}
                 onPress={() => setChien(!chien)}
               />
               <CheckBox
@@ -102,7 +167,7 @@ export default function MapScreen(props) {
                 title="Chat"
                 textStyle={styles.textCheckbox}
                 checked={chat}
-                checkedColor = {'#D35400'}
+                checkedColor={'#D35400'}
                 onPress={() => setChat(!chat)}
               />
               <CheckBox
@@ -110,7 +175,7 @@ export default function MapScreen(props) {
                 title="Lapin"
                 textStyle={styles.textCheckbox}
                 checked={lapin}
-                checkedColor = {'#D35400'}
+                checkedColor={'#D35400'}
                 onPress={() => setLapin(!lapin)}
               />
               <CheckBox
@@ -118,7 +183,7 @@ export default function MapScreen(props) {
                 title="Cheval"
                 textStyle={styles.textCheckbox}
                 checked={cheval}
-                checkedColor = {'#D35400'}
+                checkedColor={'#D35400'}
                 onPress={() => setCheval(!cheval)}
               />
               <CheckBox
@@ -126,7 +191,7 @@ export default function MapScreen(props) {
                 title="Autres"
                 textStyle={styles.textCheckbox}
                 checked={autres}
-                checkedColor = {'#D35400'}
+                checkedColor={'#D35400'}
                 onPress={() => setAutres(!autres)}
               />
               <Text style={styles.textOverlay}>Type de garde souhaitée : </Text>
@@ -135,7 +200,7 @@ export default function MapScreen(props) {
                 title="Ponctuelle"
                 textStyle={styles.textCheckbox}
                 checked={ponctuelle}
-                checkedColor = {'#D35400'}
+                checkedColor={'#D35400'}
                 onPress={() => setPonctuelle(!ponctuelle)}
               />
               <CheckBox
@@ -143,16 +208,13 @@ export default function MapScreen(props) {
                 title="Régulière"
                 textStyle={styles.textCheckbox}
                 checked={reguliere}
-                checkedColor = {'#D35400'}
+                checkedColor={'#D35400'}
                 onPress={() => setReguliere(!reguliere)}
               />
               <Button
                 onPress={toggleOverlay}
                 title="Valider filtres"
-                buttonStyle={{
-                  backgroundColor: '#D35400',
-                  borderRadius: 3,
-                }}
+                buttonStyle={{backgroundColor: '#D35400', borderRadius: 3,}}
               />
             </ScrollView>
           </Overlay>
@@ -164,15 +226,16 @@ export default function MapScreen(props) {
           initialRegion={{
             latitude: 45.764043,  // pour centrer la carte
             longitude: 4.835659,
-            latitudeDelta: 0.0922,  // le rayon à afficher à partir du centre
-            longitudeDelta: 0.0421,
+            latitudeDelta: 0.2922,  // le rayon à afficher à partir du centre
+            longitudeDelta: 0.2421,
           }}>
           <Marker coordinate={{ latitude: currentLatitude, longitude: currentLongitude }}
-            title="Hello"
-            description="I am here"
+            title="Votre position"
+            pinColor='#2C3E50'
             draggable  // Rendre le marqueur drag & dropable
             opacity={0.5}  // Modifier l'opacité
           />
+          {markerUsers}
         </MapView>
 
         {/* Affichage de la liste de users à proximité : */}
@@ -181,36 +244,7 @@ export default function MapScreen(props) {
             flex: 1, width: 365,
             backgroundColor: '#ECF0F1',
           }}>
-            <ListItem bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
-              <ListItem.Content style={{ flexDirection: 'row' }}>
-                <ListItem.Title style={styles.text}>
-                  User D
-                </ListItem.Title>
-                <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-                  onPress={() => props.navigation.navigate('ProfilScreen', {userID : "621ceaf3dbf113fb8a25dd26"})} />
-              </ListItem.Content>
-            </ListItem>
-            <ListItem bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
-              <ListItem.Content style={{ flexDirection: 'row' }}>
-                <ListItem.Title style={styles.text}>
-                  User D
-                </ListItem.Title>
-                <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-                  onPress={() => props.navigation.navigate('ProfilScreen', {userID : "621cd647983d6214027fd4d1" })} />
-              </ListItem.Content>
-            </ListItem>
-            <ListItem bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
-              <ListItem.Content style={{ flexDirection: 'row' }}>
-                <ListItem.Title style={styles.text}>
-                  Kéo
-                </ListItem.Title>
-                <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-                  onPress={() => props.navigation.navigate('ProfilScreen', {userID : "621dda7dc37116864d82dc1d" })} />
-              </ListItem.Content>
-            </ListItem>
+            {userNear}
           </View>
         </ScrollView>
       </View>
@@ -225,20 +259,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  h6: {
+  h1: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
-    fontSize: 25,
+    fontSize: 35,
     textAlign: 'center',
-    marginTop: 35,
-    marginBottom: 10,
+    marginTop: 25
   },
   textOverlay: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 20
   },
-  textCheckbox :{
+  textCheckbox: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 18
@@ -250,7 +283,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#2C3E50',
     marginVertical: 20,
-    marginRight: 120,
+    marginRight: 85,
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 20
   },
