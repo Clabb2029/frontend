@@ -6,6 +6,9 @@ import socketIOClient from 'socket.io-client'
 
 var socket = socketIOClient("http://localhost:3000")
 
+import chatRoomsData from '../assets/chatrooms'
+
+
 export default function ChatScreen(props) {
 
   const [messages, setMessages] = useState([]);
@@ -14,12 +17,12 @@ export default function ChatScreen(props) {
     setMessages([
       {
         _id: 1,
-        text: 'Salut ! Tu voudrais pas promener mon chien par hasard ? Il est très sympa mais je suis occupée cet après-midi :/ ',
+        text: 'btw, SpaceX is interested in buying notJust.dev!',
         createdAt: new Date(),
         user: {
           _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
+          name: 'Elon Musk',
+          avatar: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/elon.png',
         },
       },
     ])
