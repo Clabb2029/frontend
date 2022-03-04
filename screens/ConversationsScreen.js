@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, Button } from 'react-native';
 import chatRoomsData from '../assets/chatrooms'
 
 
@@ -13,10 +13,10 @@ export default function ConversationsScreen(props) {
         </View>
 
         <FlatList
-        style={styles.flatlist}
+          style={styles.flatlist}
           data = {chatRoomsData}
           renderItem= {({item}) =>       
-          <View style={styles.message}>    
+          <View style={styles.message} >    
             <Image source={{uri: item.users[1].imageUri}} style={styles.image}/>
 
             {item.newMessages ? <View style={styles.badgeContainer}>
@@ -33,9 +33,10 @@ export default function ConversationsScreen(props) {
               <Text style={styles.text} numberOfLines={2}>{item.lastMessage.content}</Text>
 
             </View>
+            <Button title='go chat' onPress={() => props.navigation.navigate('ChatScreen')}/>
           </View>
         }
-        />      
+        />
       </View>
   );
 }
