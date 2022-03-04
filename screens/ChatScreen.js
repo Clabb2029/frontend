@@ -17,12 +17,12 @@ export default function ChatScreen(props) {
     setMessages([
       {
         _id: 1,
-        text: 'btw, SpaceX is interested in buying notJust.dev!',
+        text: "Coucou ! Ca te dirait de garder mon chien ! Il est très gentil ! Je dois partir ce week-end...",
         createdAt: new Date(),
         user: {
           _id: 2,
-          name: 'Elon Musk',
-          avatar: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/elon.png',
+          name: 'Keo',
+          avatar: require('../assets/avatar.png'),
         },
       },
     ])
