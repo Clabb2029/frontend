@@ -63,7 +63,7 @@ export default function MapScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch('http://172.16.190.7:3000/users-position');
+      const rawData = await fetch('http://192.168.1.5:3000/users-position');
       const data = await rawData.json();
       setUserOwnerData(data.usersOwner)
     }
@@ -226,8 +226,8 @@ export default function MapScreen(props) {
           initialRegion={{
             latitude: 45.764043,  // pour centrer la carte
             longitude: 4.835659,
-            latitudeDelta: 0.2922,  // le rayon à afficher à partir du centre
-            longitudeDelta: 0.2421,
+            latitudeDelta: 0.2822,  // le rayon à afficher à partir du centre
+            longitudeDelta: 0.2221,
           }}>
           <Marker coordinate={{ latitude: currentLatitude, longitude: currentLongitude }}
             title="Votre position"

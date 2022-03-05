@@ -11,6 +11,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Ionicons } from '@expo/vector-icons';
 
+//redux et reducer 
+import token from './reducers/token'
+import {Provider} from 'react-redux';
+import {createStore, combineReducers} from 'redux';
+
 
 // Import des composants 
 import ChatScreen from './screens/ChatScreen'
@@ -29,20 +34,21 @@ import SignInScreen from './screens/SignInScreen'
 import SignUpScreen from './screens/SignUpScreen'
 
 
+const store = createStore(combineReducers({ token }))
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
 
 // Navigation Stack à partir du composant MapScreen
 const MapBottom = () => {
   return (
-        <Stack.Navigator screenOptions={{headerShown: false}}>
+<Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="Map" component={MapScreen} />
           <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
           <Stack.Screen name="ProfilPhotoScreen" component={ProfilPhotoScreen} />
           <Stack.Screen name="ProfilAvisScreen" component={ProfilAvisScreen} />
           <Stack.Screen name="ChatScreen" component={ChatScreen} />
-        </Stack.Navigator>
+        </Stack.Navigator>   
   )
 }
 
@@ -110,7 +116,7 @@ const BottomNavigator = () => {
 
 export default function App() {
   return (
-    // <Provider store={store}>
+    <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
@@ -120,7 +126,7 @@ export default function App() {
           <Stack.Screen name="BottomNavigator" component={BottomNavigator} />
         </Stack.Navigator>
     </NavigationContainer>
-// </Provider>
+</Provider>
   );
 }
 
