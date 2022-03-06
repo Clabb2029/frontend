@@ -196,7 +196,7 @@ for (var j = 0; j < 5; j++) {
           <View style={styles.tab}>
             <Text style={styles.h6}>Profil de {userInfo.pseudo}</Text>
             <View style={styles.buttonRight}>
-              <FontAwesome name="envelope" size={25} color="#2C3E50" style={{ marginRight: 15 }} />
+              <FontAwesome name="envelope" size={25} color="#2C3E50" style={{ marginRight: 15 }} onPress={() => props.navigation.navigate('ChatScreen')}/>
               <MaterialCommunityIcons name="account-star" size={29} color="#2C3E50" style={{ marginRight: 10 }} />
             </View>
             <View style={styles.star}>

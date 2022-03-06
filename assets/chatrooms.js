@@ -3,7 +3,7 @@ export default [{
     users: [{
       id: 'u1',
       name: 'Marie',
-      imageUri: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Ftoppng.com%2Fapp-icon-set-login-icon-comments-avatar-icon-PNG-free-PNG-Images_126250&psig=AOvVaw2eW6tCwAN1ZKCkPpav3k-x&ust=1646489745967000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCKj9tY7SrPYCFQAAAAAdAAAAABAD',
+      imageUri: require('./icon.png'),
     }, {
       id: 'u2',
       name: 'Keo',
