@@ -91,7 +91,7 @@ const onSingInPressed = () => {
 
 // Gestion du signup :
 var handleSubmitSignup = async () => {
-  const request = await fetch('http://192.168.1.5:3000/users/signup', {
+  const request = await fetch('http://172.16.190.17:3000/users/signup', {
   method: "POST",
   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   body: `pseudo=${pseudo}&email=${email}&password=${password}&status=${owner}&optinEmails=${optinEmails}`

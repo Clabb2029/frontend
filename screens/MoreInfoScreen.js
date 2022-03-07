@@ -98,7 +98,7 @@ export default function SignUpScreen( { route, navigation }) {
         </View>
         <CustomButton text="Valider"
           onPress={async () => {
-            const request = await fetch(`http://192.168.1.5:3000/users/signup-more/${token}`, {
+            const request = await fetch(`http://172.16.190.17:3000/users/signup-more/${token}`, {
               method: "PUT",
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: `zipcode=${codePostal}&city=${ville}&livingPlace=${maison}&guardType=${ponctuelle}`
