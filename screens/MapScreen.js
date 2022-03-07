@@ -226,8 +226,8 @@ export default function MapScreen(props) {
           initialRegion={{
             latitude: 45.764043,  // pour centrer la carte
             longitude: 4.835659,
-            latitudeDelta: 0.2922,  // le rayon à afficher à partir du centre
-            longitudeDelta: 0.2421,
+            latitudeDelta: 0.2822,  // le rayon à afficher à partir du centre
+            longitudeDelta: 0.2221,
           }}>
           <Marker coordinate={{ latitude: currentLatitude, longitude: currentLongitude }}
             title="Votre position"

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
 import { CheckBox, Icon, Switch } from 'react-native-elements';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import {useSelector} from 'react-redux';
 
 
 function CustomButton({ onPress, text, type = "PRIMARY", bgColor, fgColor }) {
@@ -34,25 +36,13 @@ function CustomInputs({ value, setValue, placeholder, secureTextEntry }) {
 
 export default function SignUpScreen( { route, navigation }) {
 
-  const { token } = route.params
+  const  token  = useSelector(state => state.token)
   const [codePostal, setCodePostal] = useState('');
   const [ville, setVille] = useState('');
-  const [livingPlace, setLivingPlace] = useState('');
-  const [petChoice, setPetChoice] = useState([]);
-  const [guardType, setGuardType] = useState('')
 
 
-  // Checkbox animaux
-  const [chien, setChien] = useState("");
-  const [chat, setChat] = useState("");
-  const [cheval, setCheval] = useState("");
-  const [lapin, setLapin] = useState("");
-  const [autres, setAutres] = useState("");
-
-
-  // Checkbox maison / appartement
+ // Checkbox maison / appartement
   const [maison, setMaison] = useState(false);
-
 
   // gardes regulière ou ponctuelle
   const [ponctuelle, setPonctuelle] = useState(false);
@@ -73,7 +63,7 @@ export default function SignUpScreen( { route, navigation }) {
           title="Appartement"
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
-          checked={maison}
+          checked={!maison}
           onPress={() => setMaison(!maison)}
         />
         <CheckBox
@@ -81,60 +71,11 @@ export default function SignUpScreen( { route, navigation }) {
           title="Maison"
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
-          checked={!maison}
+          checked={maison}
           onPress={() => setMaison(!maison)}
         />
       </View>
-      <View style={styles.speciesCheckox}>
-        <Text style={styles.subtileSouhait}>Espèces que je souhaite garder:</Text>
-        <View style={styles.twoColumns}>
-          <View style={styles.speciesChoices}>
-            <View style={{ flexDirection: "row" }}>
-              <CheckBox
-                center
-                title="Chien"
-                textStyle={styles.textCheckbox}
-                checked={chien}
-                checkedColor={'#D35400'}
-                onPress={() => setChien("chien")}
-              />
-              <CheckBox
-                center
-                title="Chat"
-                textStyle={styles.textCheckbox}
-                checked={chat}
-                checkedColor={'#D35400'}
-                onPress={() => setChat("chat")}
-              />
-              <CheckBox
-                center
-                title="Lapin"
-                textStyle={styles.textCheckbox}
-                checked={lapin}
-                checkedColor={'#D35400'}
-                onPress={() => setLapin("lapin")}
-              />
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <CheckBox
-                center
-                title="Cheval"
-                textStyle={styles.textCheckbox}
-                checked={cheval}
-                checkedColor={'#D35400'}
-                onPress={() => setCheval("cheval")}
-              />
-              <CheckBox
-                center
-                title="Autres"
-                textStyle={styles.textCheckbox}
-                checked={autres}
-                checkedColor={'#D35400'}
-                onPress={() => setAutres("autres")}
-              />
-            </View>
-          </View>
-        </View>
+
         <View style={styles.gardeType}>
           <Text style={styles.subtile}>Je cherche des gardes:</Text>
           <View style={styles.gardeTypeChoice}>
@@ -154,21 +95,24 @@ export default function SignUpScreen( { route, navigation }) {
               checked={!ponctuelle}
               onPress={() => setPonctuelle(!ponctuelle)}
             />
-          </View>
         </View>
         <CustomButton text="Valider"
           onPress={async () => {
             const request = await fetch(`http://192.168.43.122:3000/users/signup-more/${token}`, {
               method: "PUT",
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: `zipcode=${codePostal}&city=${ville}&livingPlace=${maison}&petChoice=${petChoice}&guardType=${ponctuelle}`
+              body: `zipcode=${codePostal}&city=${ville}&livingPlace=${maison}&guardType=${ponctuelle}`
             })
             const data = await request.json()
             if (data.result) {
               navigation.navigate('BottomNavigator')
             }
-          }} />
-        <Text style={styles.subtile}>Renseigner ces informations plus tard</Text>
+          }} />  
+          <View>
+          <Text style={styles.subtile}>Renseigner ces informations plus tard ! 
+        <MaterialCommunityIcons style={{ marginLeft: 350 }} name="arrow-right-bold-circle-outline" size={24} color="#2C3E50"
+        onPress={()=> navigation.navigate('BottomNavigator')} /></Text>
+          </View>
       </View>
     </View>
   );
@@ -266,7 +210,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    padding: 50
+    padding: 10
   },
   title: {
     padding: 35,
@@ -285,7 +229,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#000',
-    margin: 1
+    marginTop: 25,
   },
 
   subtileSouhait: {

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
 import { CheckBox, Icon, Switch, SocialIcon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import {useDispatch} from 'react-redux';
 
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
@@ -22,11 +22,11 @@ function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
 function SocialMediaButtons(props) {
 
   const onGoogleSignInPressed = () => {
-      console.warn('"Gloogloo')
+      console.warn('"Google')
   };
 
   const onFacebookSingInPressed = () => {
-      console.warn('faceAbook')
+      console.warn('Facebook')
   };
   return (
       <>
@@ -68,21 +68,17 @@ function CustomInputs({value, setValue, placeholder, secureTextEntry}) {
 
 export default function SignUpScreen(props) {
 
+  const dispatch = useDispatch()
+
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [status, setStatus] = useState('');
   const [optinEmails, setOptinEmails] = useState(false)
-
-  // Toggle emails
-  const [checked, setChecked] = useState(false);
-  
-      if(checked == true){
-      setOptinEmails(true)
-    }
+  const [errorSignUp, setErrorSignUp] = useState('')
+  const [isSignUp, setIsSignUp ] = useState(false)
 
    // Statut Proprio vs Sitter
-    const [check1, setCheck1] = useState(true);
+    const [owner, setOwner] = useState(true);
 
 
 const onForgotPasswordPressed = () => {
@@ -93,6 +89,28 @@ const onSingInPressed = () => {
     console.warn('SingIn')
 };
 
+// Gestion du signup :
+var handleSubmitSignup = async () => {
+  const request = await fetch('http://192.168.43.122:3000/users/signup', {
+  method: "POST",
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  body: `pseudo=${pseudo}&email=${email}&password=${password}&status=${owner}&optinEmails=${optinEmails}`
+})
+ const response = await request.json()
+
+ if (response.result == true){
+   setErrorSignUp('')
+   setIsSignUp(true)
+   dispatch({type: 'addToken', token: response.userSaved.token})
+   dispatch({type: 'addUserID', userID: response.userSaved._id})
+  props.navigation.navigate('MoreInfoScreen', { token: response.userSaved.token })
+ } else if (response.error === "email déjà utilisé") {
+  setErrorSignUp("Email déjà utilisé")
+} else {
+  setErrorSignUp("Veuillez remplir tous les champs!")
+}
+ }
+
   return (
     <SafeAreaView style={styles.container}>
     <Text style={styles.title}>Inscription</Text>
@@ -100,6 +118,7 @@ const onSingInPressed = () => {
     <CustomInputs placeholder="Pseudo" value={pseudo} setValue={setPseudo}/>
     <CustomInputs placeholder="Email" value={email} setValue={setEmail}/>
     <CustomInputs placeholder="Password" value={password} setValue={setPassword} secureTextEntry />
+    <Text style={styles.error}>{errorSignUp}</Text>
     <CustomButton text="Password Forgot" onPress={onForgotPasswordPressed} type="TERTIARY" />
     <CustomButton text="Have an Account? Sign In Here" onPress={onSingInPressed} type="TERTIARY" />
     <View style={styles.souhait}>
@@ -110,40 +129,30 @@ const onSingInPressed = () => {
           title="Garder"
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
-          checked={check1}
-          onPress={() => setCheck1(!check1)}
+          checked={owner}
+          onPress={() => setOwner(!owner)}
         />
          <CheckBox
           center
           title="Faire Garder"
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
-          checked={!check1}
-          onPress={() => setCheck1(!check1)}
+          checked={!owner}
+          onPress={() => setOwner(!owner)}
         />
       </View>
     <View style={styles.souhaitToogle}>
-    <Text style={styles.subtile}>J'accepte de reçevoir des mails de la part de petFriends</Text>
+    <Text style={styles.subtile}>J'accepte de recevoir des mails de la part de PetFriends</Text>
     <View style={styles.view}>
        <Switch
-          value={checked}
-          onValueChange={(value) => setChecked(value)}
+          value={optinEmails}
+          onValueChange={(value) => setOptinEmails(value)}
         />
       </View>
     </View>
     </View>
     <CustomButton text="S'inscrire" 
-        onPress={async () => {
-        const request = await fetch('http://192.168.43.122:3000/users/signup', {
-        method: "POST",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `pseudo=${pseudo}&email=${email}&password=${password}&check1=${check1}&optinEmails=${optinEmails}`
-      })
-       const data = await request.json()
-       if (data.result){
-        props.navigation.navigate('MoreInfoScreen', { token: data.token })
-       }
-    }}
+        onPress={ () => handleSubmitSignup () }
       />
 </SafeAreaView>
   );
@@ -164,7 +173,9 @@ const styles = StyleSheet.create({
     marginVertical: 1,
     marginTop: 15,
   },
-
+  error :{
+    color: "red"
+  },
   souhaitToogle: {
     flexDirection: "row"
   },

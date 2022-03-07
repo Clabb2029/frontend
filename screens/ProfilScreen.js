@@ -1,9 +1,10 @@
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image, Dimensions } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image, Dimensions, TextInput} from 'react-native';
 import { Tabs } from '@ant-design/react-native';
-import { Badge, ListItem } from 'react-native-elements';
+import { Badge, ListItem, Overlay, Button } from 'react-native-elements';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState, useEffect } from 'react';
+import {useSelector} from 'react-redux';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 
@@ -27,7 +28,7 @@ import {
 } from '@expo-google-fonts/alegreya-sans';
 
 
-export default function ProfilScreen({route}) {
+export default function ProfilScreen({route, navigation}) {
   let [fontsLoaded] = useFonts({
     AlegreyaSans_100Thin,
     AlegreyaSans_100Thin_Italic,
@@ -50,6 +51,19 @@ export default function ProfilScreen({route}) {
  const [userData, setUserData] = useState([])
  const [userInfo, setUserInfo] = useState([])
  const { userID } = route.params;
+
+ const  token  = useSelector(state => state.token)
+ const currentUserID = useSelector(state => state.userID)
+
+ //Overlay sending message
+ const [visible, setVisible] = useState(false);
+ const [message, setMessage] = useState('')
+
+ const toggleOverlay = () => {
+  setVisible(!visible);
+};
+
+
 
 useEffect(() => {
  const loadData = async  () => {
@@ -196,9 +210,60 @@ for (var j = 0; j < 5; j++) {
           <View style={styles.tab}>
             <Text style={styles.h6}>Profil de {userInfo.pseudo}</Text>
             <View style={styles.buttonRight}>
-              <FontAwesome name="envelope" size={25} color="#2C3E50" style={{ marginRight: 15 }} onPress={() => props.navigation.navigate('ChatScreen')}/>
+  
+              <FontAwesome name="envelope" size={25} color="#2C3E50" style={{ marginRight: 15 }} 
+              onPress={toggleOverlay}       
+              />
+
               <MaterialCommunityIcons name="account-star" size={29} color="#2C3E50" style={{ marginRight: 10 }} />
             </View>
+
+            <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 450 }}>
+
+              <Text style={styles.textOverlay}>Envoyer un message à {userInfo.pseudo} :</Text>
+
+              <TextInput
+                style = {{fontFamily: 'AlegreyaSans_400Regular', color: "#2C3E50"}}
+                multiline
+                placeholder='Type your message ...'
+                onChangeText={(msg)=>setMessage(msg)}
+                value={message}
+              />
+
+              <Button
+                title="Send"
+                buttonStyle={{
+                  backgroundColor: '#D35400',
+                  borderRadius: 3,
+                }}
+                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+                onPress={async () => {
+                  toggleOverlay()
+                  var userInfoID = userInfo._id 
+                  console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
+                  await fetch('http://192.168.43.122:3000/send-message/', {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `participant1=${userInfoID}&participant2=${currentUserID}&message=${message}&createdAt=${Date.now()}`
+                  })
+                  setMessage()
+                }}
+              />
+
+              <Button
+                title="Fermer"
+                buttonStyle={{
+                  backgroundColor:"#2C3E50",
+                  borderRadius: 3,
+                }}
+                containerStyle={{marginTop:10}}
+                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+                onPress={ () => {
+                  toggleOverlay()
+                }}
+              />
+            </Overlay>
+
             <View style={styles.star}>
               {averageRate}
             </View>
@@ -345,5 +410,11 @@ const styles = StyleSheet.create({
   image: {
     width: Math.round(Dimensions.get('window').width * 1),
     height: 400,
+  },
+  textOverlay: {
+    color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    textAlign: 'center',
+    fontSize: 20
   },
 });
