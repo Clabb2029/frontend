@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Dimensions, Image, ScrollView } from 'react-native';
 import { ListItem, Button, Overlay, CheckBox } from 'react-native-elements';
+import { FontAwesome } from '@expo/vector-icons'; 
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -63,7 +64,11 @@ export default function MapScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
+<<<<<<< HEAD
       const rawData = await fetch('http://192.168.43.122:3000/users-position');
+=======
+      const rawData = await fetch('http://172.16.190.17:3000/users-position');
+>>>>>>> 1384e16f0890cb17a4aa02192a89f88ac3543443
       const data = await rawData.json();
       setUserOwnerData(data.usersOwner)
     }
@@ -82,33 +87,43 @@ export default function MapScreen(props) {
   const [cheval, setCheval] = useState(false);
   const [lapin, setLapin] = useState(false);
   const [autres, setAutres] = useState(false);
-  const [ponctuelle, setPonctuelle] = useState(false);
-  const [reguliere, setReguliere] = useState(false);
-  const [isChecked, setIsChecked] = useState([])
 
   // Filtres des users :
-    dataFiltered = userOwnerData
-  if (chien == true){
+  dataFiltered = userOwnerData
+  if (chien == true) {
     var dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chien")
-  } 
-  if (chat == true){
-    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chat" )
-  } 
-  if (lapin == true){
-    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "lapin" )
-  } 
-  if (cheval == true){
-    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "cheval" )
-  } 
-  if (ponctuelle == true){
-    dataFiltered = userOwnerData.filter(guard => guard.guarType == "Ponctuelle")
   }
-  if (reguliere == true){
-    dataFiltered = userOwnerData.filter(guard => guard.guardType == "Régulière" )
+  if (chat == true) {
+    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chat")
+  }
+  if (lapin == true) {
+    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "lapin")
+  }
+  if (cheval == true) {
+    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "cheval")
+  }
+  if (autres == true){
+    dataFiltered = userOwnerData.filter(pet => pet.petChoice == "autres")
   }
 
   // Affichage des profils users : 
   var userNear = dataFiltered.map((data, i) => {
+    var icon;
+    if (data.petChoice == "chien") {
+      icon = require('../assets/dog.png')
+    }
+    if (data.petChoice == "chat") {
+      icon = require('../assets/cat.png')
+    }
+    if (data.petChoice == "cheval") {
+      icon = require('../assets/horse.png')
+    }
+    if (data.petChoice == "lapin") {
+      icon = require('../assets/rabbit.png')
+    }
+    if (data.petChoice == "autres"){
+      icon = require('../assets/paw.png')
+    }
 
     return (
       <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
@@ -118,20 +133,65 @@ export default function MapScreen(props) {
             {data.pseudo}
           </ListItem.Title>
         </ListItem.Content>
+        <Image source={icon} style={{width:35, height:35, marginRight:75}}></Image>
         <ListItem.Content right><Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
           onPress={() => props.navigation.navigate('ProfilScreen', { userID: data._id })} /></ListItem.Content>
       </ListItem>
     )
   })
-
+  const [userPseudo, setUserPseudo] = useState('')
+  const [userMarkerId, setUserMarkerId] = useState('')
   // Affichage des markers : 
-  var markerUsers = userOwnerData.map((user, j) => {
+  var markerUsers = dataFiltered.map((user, j) => {
+ 
     if (user.address.length > 0) {
+      var imageMarker;
+      if (user.petChoice == "chien") {
+        imageMarker = require('../assets/dog.png')
+      }
+      if (user.petChoice == "chat") {
+        imageMarker = require('../assets/cat.png')
+      }
+      if (user.petChoice == "cheval") {
+        imageMarker = require('../assets/horse.png')
+      }
+      if (user.petChoice == "lapin") {
+        imageMarker = require('../assets/rabbit.png')
+      }
+      if (user.petChoice == "autres"){
+        imageMarker = require('../assets/paw.png')
+      }
+
+      const markerOk = (pseudo, id) => {
+        setVisible(true);
+        setUserPseudo(user.pseudo)
+        setUserMarkerId(user._id)
+      };
+      const markerClose = () => {
+        setVisible(false)
+      }
       return (
-          <Marker key={j} coordinate={{ latitude: user.address[0].latitude, longitude: user.address[0].longitude }}
-            title={user.pseudo}
-            pinColor='#D35400'
+
+        <Marker key={j} coordinate={{ latitude: user.address[0].latitude, longitude: user.address[0].longitude }}
+          
+          onPress = {() => markerOk(user.pseudo, user._id)}>
+          <Image
+            source={imageMarker}
+            style={{ width: 30, height: 32 }}
+            resizeMode="contain"
           />
+           <Overlay isVisible={visible} overlayStyle={{ width: 135, height: 180 }}>
+           <ScrollView>
+           <FontAwesome name="close" size={24} color="#2C3E50" style={{marginLeft:80}} onPress={markerClose}/>
+            <View style={{marginLeft:20}}>
+            <Text style={styles.textOverlay}>{userPseudo}</Text>
+              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+              <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+          onPress={() => (props.navigation.navigate('ProfilScreen', { userID: userMarkerId }), markerClose() )} />
+            </View>
+              </ScrollView>
+             </Overlay>
+        </Marker>
       )
     }
   })
@@ -142,7 +202,7 @@ export default function MapScreen(props) {
     return (
       <View style={styles.container}>
         <Text style={styles.h1}>Utilisateurs à proximité :</Text>
-        {/* Affichage filtres et calendrier :         */}
+        {/* Affichage filtres         */}
         <View style={{ flexDirection: 'row' }}>
           <Button title="Ajouter des filtres"
             buttonStyle={{ borderColor: "#2C3E50", backgroundColor: "#ECF0F1", borderRadius: 3 }}
@@ -151,7 +211,7 @@ export default function MapScreen(props) {
             titleStyle={{ color: "#2C3E50", fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
             onPress={toggleOverlay}
           />
-          <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 500 }}>
+          <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 360 }}>
             <ScrollView>
               <Text style={styles.textOverlay}>Type d'animal à garder : </Text>
               <CheckBox
@@ -194,27 +254,10 @@ export default function MapScreen(props) {
                 checkedColor={'#D35400'}
                 onPress={() => setAutres(!autres)}
               />
-              <Text style={styles.textOverlay}>Type de garde souhaitée : </Text>
-              <CheckBox
-                center
-                title="Ponctuelle"
-                textStyle={styles.textCheckbox}
-                checked={ponctuelle}
-                checkedColor={'#D35400'}
-                onPress={() => setPonctuelle(!ponctuelle)}
-              />
-              <CheckBox
-                center
-                title="Régulière"
-                textStyle={styles.textCheckbox}
-                checked={reguliere}
-                checkedColor={'#D35400'}
-                onPress={() => setReguliere(!reguliere)}
-              />
               <Button
                 onPress={toggleOverlay}
                 title="Valider filtres"
-                buttonStyle={{backgroundColor: '#D35400', borderRadius: 3,}}
+                buttonStyle={{ backgroundColor: '#D35400', borderRadius: 3, }}
               />
             </ScrollView>
           </Overlay>
@@ -226,8 +269,8 @@ export default function MapScreen(props) {
           initialRegion={{
             latitude: 45.764043,  // pour centrer la carte
             longitude: 4.835659,
-            latitudeDelta: 0.2822,  // le rayon à afficher à partir du centre
-            longitudeDelta: 0.2221,
+            latitudeDelta: 0.1122,  // le rayon à afficher à partir du centre
+            longitudeDelta: 0.1321,
           }}>
           <Marker coordinate={{ latitude: currentLatitude, longitude: currentLongitude }}
             title="Votre position"
@@ -278,12 +321,12 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.55,
+    height: Dimensions.get('window').height * 0.47,
   },
   text: {
     color: '#2C3E50',
     marginVertical: 20,
-    marginRight: 85,
+    marginRight: 15,
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 20
   },

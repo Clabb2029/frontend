@@ -39,13 +39,15 @@ export default function SignUpScreen( { route, navigation }) {
   const  token  = useSelector(state => state.token)
   const [codePostal, setCodePostal] = useState('');
   const [ville, setVille] = useState('');
-
+  const [errorSignUp, setErrorSignUp] = useState('')
 
  // Checkbox maison / appartement
   const [maison, setMaison] = useState(false);
+  const [appartement, setAppartement] = useState(false);
 
   // gardes regulière ou ponctuelle
   const [ponctuelle, setPonctuelle] = useState(false);
+  const [regular,setRegular] = useState(false)
 
   return (
     <View style={styles.container}>
@@ -63,8 +65,8 @@ export default function SignUpScreen( { route, navigation }) {
           title="Appartement"
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
-          checked={!maison}
-          onPress={() => setMaison(!maison)}
+          checked={appartement}
+          onPress={() => {setAppartement(true);setMaison(false)}}
         />
         <CheckBox
           center
@@ -72,7 +74,7 @@ export default function SignUpScreen( { route, navigation }) {
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
           checked={maison}
-          onPress={() => setMaison(!maison)}
+          onPress={() => {setAppartement(false);setMaison(true)}}
         />
       </View>
 
@@ -85,19 +87,20 @@ export default function SignUpScreen( { route, navigation }) {
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
               checked={ponctuelle}
-              onPress={() => setPonctuelle(!ponctuelle)}
+              onPress={() => {setRegular(false);setPonctuelle(true)}}
             />
             <CheckBox
               center
               title="Régulière"
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
-              checked={!ponctuelle}
-              onPress={() => setPonctuelle(!ponctuelle)}
+              checked={regular}
+              onPress={() => {setRegular(true);setPonctuelle(false)}}
             />
         </View>
         <CustomButton text="Valider"
           onPress={async () => {
+            if((maison!=false || appartement !=false)&&(ponctuelle!=false || regular !=false)){
             const request = await fetch(`http://192.168.43.122:3000/users/signup-more/${token}`, {
               method: "PUT",
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -106,8 +109,13 @@ export default function SignUpScreen( { route, navigation }) {
             const data = await request.json()
             if (data.result) {
               navigation.navigate('BottomNavigator')
+            }else{
+              setErrorSignUp(data.error)
             }
-          }} />  
+          }else{
+            setErrorSignUp("Veuillez selectionner une checkbox")
+          }
+        }} />  
           <View>
           <Text style={styles.subtile}>Renseigner ces informations plus tard ! 
         <MaterialCommunityIcons style={{ marginLeft: 350 }} name="arrow-right-bold-circle-outline" size={24} color="#2C3E50"

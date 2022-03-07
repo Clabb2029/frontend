@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
 import { CheckBox, SocialIcon,Icon, Switch } from 'react-native-elements';
+import {useDispatch} from 'react-redux';
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
@@ -60,83 +61,45 @@ function CustomInputs({value, setValue, placeholder, secureTextEntry}) {
   );
 }
 
-function SwitchButton (props) {
-  const [checked, setChecked] = useState(false);
-
-  const toggleSwitch = () => {
-    setChecked(!checked);
-  };
-
-  return (
-    <View style={styles.view}>
-     <Switch
-        value={checked}
-        onValueChange={(value) => setChecked(value)}
-      />
-    </View>
-  );
-}
-
-function CheckoxScreen(props) {
-  const [check1, setCheck1] = useState(false);
-  const [check2, setCheck2] = useState(false);
-  
-
-  const onCheckedChange = (isChecked) => {
-    console.log("yay")
-  };
-
-  return (
-    <View style={styles.containerCheckbox}>
-      <CheckBox
-        center
-        title="Garder"
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
-        checked={check2}
-        onPress={() => setCheck1(!check2)}
-      />
-       <CheckBox
-        center
-        title="Faire Garder"
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
-        checked={check2}
-        onPress={() => setCheck2(!check2)}
-      />
-    </View>
-
-  );
-};
  
 export default function SignInScreen(props) {
+
+  const dispatch = useDispatch()
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorSignIn, setErrorSignIn] = useState('')
 
-  const onRegisterPressed = () => {
-    console.warn("Sign In")
-};
-const onForgotPasswordPressed = () => {
-    console.warn('Your password')
-};
+var handleSubmitSignin = async () => {
 
-const onSingInPressed = () => {
-    console.warn('SingIn')
-};
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>CONNECTION</Text>
-      
-    <SocialMediaButtons />
-    <View style={styles.inputButton}>
-    <CustomInputs placeholder="Email" value={email} setValue={setEmail}/>
-    <CustomInputs placeholder="Password" value={password} setValue={setPassword} secureTextEntry />
-    </View>
-    <CustomButton text="SE CONNECTER" onPress={() => props.navigation.navigate('BottomNavigator')} />
-    </View>
-  );
+  var request = await fetch('http://172.16.190.17:3000/users/signin', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `email=${email}&password=${password}`
+    })
+  const response = await request.json() 
+  if (response.result == true){
+    dispatch({type: 'addToken', token: response.user.token})
+    props.navigation.navigate('BottomNavigator')
+  }else{
+    setErrorSignIn(response.error)
+  } 
+
 }
-
+return (
+  <View style={styles.container}>
+    <Text style={styles.title}>CONNECTION</Text>
+    
+    <SocialMediaButtons />
+      <View style={styles.inputButton}>
+      <CustomInputs placeholder="Email" value={email} setValue={setEmail}/>
+      <CustomInputs placeholder="Password" value={password} setValue={setPassword} secureTextEntry />
+      </View>
+    <Text style={styles.error}>{errorSignIn}</Text>
+    <CustomButton text="SE CONNECTER" onPress={() => handleSubmitSignin()} />
+  </View>
+);
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
