@@ -134,7 +134,7 @@ const onSingInPressed = () => {
     </View>
     <CustomButton text="S'inscrire" 
         onPress={async () => {
-        const request = await fetch('http://172.16.190.7:3000/users/signup', {
+        const request = await fetch('http://192.168.43.122:3000/users/signup', {
         method: "POST",
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `pseudo=${pseudo}&email=${email}&password=${password}&check1=${check1}&optinEmails=${optinEmails}`
