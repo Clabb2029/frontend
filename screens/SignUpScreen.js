@@ -75,10 +75,10 @@ export default function SignUpScreen(props) {
   const [password, setPassword] = useState('');
   const [optinEmails, setOptinEmails] = useState(false)
   const [errorSignUp, setErrorSignUp] = useState('')
-  const [isSignUp, setIsSignUp ] = useState(false)
 
    // Statut Proprio vs Sitter
-    const [owner, setOwner] = useState(true);
+    const [owner, setOwner] = useState(false);
+    const [sitter,setSitter] =useState(false)
 
 
 const onForgotPasswordPressed = () => {
@@ -91,23 +91,31 @@ const onSingInPressed = () => {
 
 // Gestion du signup :
 var handleSubmitSignup = async () => {
-  const request = await fetch('http://172.16.190.17:3000/users/signup', {
-  method: "POST",
-  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  body: `pseudo=${pseudo}&email=${email}&password=${password}&status=${owner}&optinEmails=${optinEmails}`
-})
- const response = await request.json()
 
- if (response.result == true){
-   setErrorSignUp('')
-   setIsSignUp(true)
-   dispatch({type: 'addToken', token: response.userSaved.token})
-  props.navigation.navigate('MoreInfoScreen', { token: response.userSaved.token })
- } else if (response.error === "email déjà utilisé") {
-  setErrorSignUp("Email déjà utilisé")
-} else {
-  setErrorSignUp("Veuillez remplir tous les champs!")
-}
+  if(owner!=false || sitter !=false){
+
+    var request = await fetch('http://172.16.190.17:3000/users/signup', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `pseudo=${pseudo}&email=${email}&password=${password}&status=${owner}&optinEmails=${optinEmails}`
+    })
+    
+    const response = await request.json()
+    if (response.result == true){
+      setErrorSignUp('')
+      dispatch({type: 'addToken', token: response.userSaved.token})
+     props.navigation.navigate('MoreInfoScreen', { token: response.userSaved.token })
+    } else if (response.error === "email déjà utilisé") {
+     setErrorSignUp("Email déjà utilisé")
+   } else if (response.error === "Veuillez saisir un email valide ! "){
+   setErrorSignUp("Veuillez saisir un email valide ! ")}
+   else{
+     setErrorSignUp("Veuillez remplir tous les champs!")
+   }
+  }else{
+    setErrorSignUp("Veuillez selectionner une checkbox")
+  }
+ 
  }
 
   return (
@@ -129,15 +137,15 @@ var handleSubmitSignup = async () => {
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
           checked={owner}
-          onPress={() => setOwner(!owner)}
+          onPress={() => {setSitter(false);setOwner(true)}}
         />
-         <CheckBox
+        <CheckBox
           center
           title="Faire Garder"
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
-          checked={!owner}
-          onPress={() => setOwner(!owner)}
+          checked={sitter}
+          onPress={() => {setSitter(true);setOwner(false)}}
         />
       </View>
     <View style={styles.souhaitToogle}>
