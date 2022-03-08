@@ -64,13 +64,9 @@ export default function MapScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-<<<<<<< HEAD
-      const rawData = await fetch('http://192.168.43.122:3000/users-position');
-=======
-      const rawData = await fetch('http://172.16.190.17:3000/users-position');
->>>>>>> 1384e16f0890cb17a4aa02192a89f88ac3543443
+      const rawData = await fetch('http://192.168.1.5:3000/users-position');
       const data = await rawData.json();
-      setUserOwnerData(data.usersOwner)
+      setUserOwnerData(data.usersOwner.sort())
     }
     loadData();
   }, []);
@@ -107,6 +103,8 @@ export default function MapScreen(props) {
   }
 
   // Affichage des profils users : 
+  const [profilVisible, setProfilVisible] = useState(false)
+
   var userNear = dataFiltered.map((data, i) => {
     var icon;
     if (data.petChoice == "chien") {
@@ -127,7 +125,7 @@ export default function MapScreen(props) {
 
     return (
       <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <Image source={{uri : data.avatar}} style={styles.avatarItem}></Image>
         <ListItem.Content style={{ flexDirection: 'row' }}>
           <ListItem.Title style={styles.text}>
             {data.pseudo}
@@ -140,6 +138,7 @@ export default function MapScreen(props) {
     )
   })
   const [userPseudo, setUserPseudo] = useState('')
+  const [userAvatar, setUserAvatar] = useState('')
   const [userMarkerId, setUserMarkerId] = useState('')
   // Affichage des markers : 
   var markerUsers = dataFiltered.map((user, j) => {
@@ -163,29 +162,30 @@ export default function MapScreen(props) {
       }
 
       const markerOk = (pseudo, id) => {
-        setVisible(true);
+        setProfilVisible(true);
         setUserPseudo(user.pseudo)
+        setUserAvatar(user.avatar)
         setUserMarkerId(user._id)
       };
       const markerClose = () => {
-        setVisible(false)
+        setProfilVisible(false)
       }
       return (
 
         <Marker key={j} coordinate={{ latitude: user.address[0].latitude, longitude: user.address[0].longitude }}
           
-          onPress = {() => markerOk(user.pseudo, user._id)}>
+          onPress = {() => markerOk(user.pseudo, user._id, user.avatar)}>
           <Image
             source={imageMarker}
             style={{ width: 30, height: 32 }}
             resizeMode="contain"
           />
-           <Overlay isVisible={visible} overlayStyle={{ width: 135, height: 180 }}>
+           <Overlay isVisible={profilVisible} overlayStyle={{ width: 135, height: 180 }}>
            <ScrollView>
            <FontAwesome name="close" size={24} color="#2C3E50" style={{marginLeft:80}} onPress={markerClose}/>
             <View style={{marginLeft:20}}>
             <Text style={styles.textOverlay}>{userPseudo}</Text>
-              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+              <Image source={{uri : userAvatar}} style={styles.avatarItem}></Image>
               <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
           onPress={() => (props.navigation.navigate('ProfilScreen', { userID: userMarkerId }), markerClose() )} />
             </View>
@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
   },
   avatarItem: {
     width: 55,
-    height: 55
+    height: 55,
+    borderRadius : 50 
   },
 });
