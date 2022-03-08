@@ -104,27 +104,6 @@ export default function SignUpScreen({ route, navigation }) {
               checked={regular}
               onPress={() => { setRegular(true); setPonctuelle(false) }}
             />
-<<<<<<< HEAD
-        </View>
-        <CustomButton text="Valider"
-          onPress={async () => {
-            if((maison!=false || appartement !=false)&&(ponctuelle!=false || regular !=false)){
-            const request = await fetch(`http://192.168.43.122:3000/users/signup-more/${token}`, {
-              method: "PUT",
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: `zipcode=${codePostal}&city=${ville}&livingPlace=${maison}&guardType=${ponctuelle}`
-            })
-            const data = await request.json()
-            if (data.result) {
-              navigation.navigate('BottomNavigator')
-            }else{
-              setErrorSignUp(data.error)
-            }
-          }else{
-            setErrorSignUp("Veuillez selectionner une checkbox")
-          }
-        }} />  
-=======
           </View>
           <Text style={styles.subtile}>Choisir mon image de profil:</Text>
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -178,7 +157,6 @@ export default function SignUpScreen({ route, navigation }) {
                 setErrorSignUp("Veuillez selectionner une checkbox")
               }
             }} />
->>>>>>> cecile
           <View>
             <Text style={styles.subtile}>Renseigner ces informations plus tard !
               <MaterialCommunityIcons style={{ marginLeft: 350 }} name="arrow-right-bold-circle-outline" size={24} color="#2C3E50"
