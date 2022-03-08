@@ -1,6 +1,6 @@
 import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image, Dimensions, TextInput} from 'react-native';
 import { Tabs } from '@ant-design/react-native';
-import { Badge, ListItem, Overlay, Button } from 'react-native-elements';
+import { Badge, ListItem, Overlay, Button, Tooltip } from 'react-native-elements';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState, useEffect } from 'react';
@@ -51,6 +51,8 @@ export default function ProfilScreen({ route }) {
   const [userData, setUserData] = useState([])
   const [userInfo, setUserInfo] = useState([])
   const { userID } = route.params;
+  const  token  = useSelector(state => state.token)
+  const currentUserID = useSelector(state => state.userID)
 
   useEffect(() => {
     const loadData = async () => {
@@ -133,6 +135,22 @@ badgeName = 'Régulière'
 if (userInfo.guardType == false) {
   badgeName ='Ponctuelle'}
 
+// Envois des messages : 
+const [visible, setVisible] = useState(false);
+const [message, setMessage] = useState('')
+const toggleOverlay = () => {
+  setVisible(!visible);
+};
+
+
+// Ajout en favoris :
+const [favorisOK, setFavorisOK] = useState('');
+const [visibleOK, setVisibleOK] = useState(false);
+const [colorFavorite, setColorFavorite] = useState('#2C3E50')
+const favoriteOverlay = () => {
+  setVisibleOK(!visibleOK)
+}
+
   // Entête nav du haut
   const tabs = [
     { title: 'Infos', icon: "info-circle" },
@@ -199,7 +217,37 @@ if (userInfo.guardType == false) {
               onPress={toggleOverlay}       
               />
 
-              <MaterialCommunityIcons name="account-star" size={29} color="#2C3E50" style={{ marginRight: 10 }} />
+              <MaterialCommunityIcons name="account-star" size={29} color={colorFavorite} style={{ marginRight: 10 }} 
+              onPress={ async () => {
+                const request = await fetch(`http://192.168.1.5:3000/add-favorite/${token}`, {
+                method: "POST",
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `id_user=${userID}&pseudo=${userInfo.pseudo}&avatar=${userInfo.avatar}`
+                })
+                const response = await request.json()
+                if (response.result = true){
+                  setFavorisOK(`${userInfo.pseudo} a bien été rajouté à vos favoris`)
+                  favoriteOverlay()
+                  setColorFavorite('#D35400')
+                } else {
+                  setFavorisOK(`${userInfo.pseudo} est déjà dans vos favoris ! `)
+                }
+              }}/>
+              <Overlay isVisible={visibleOK} overlayStyle={{ width: 300, height: 100 }}>
+              <Text>{favorisOK}</Text>
+              <Button
+                title="OK"
+                buttonStyle={{
+                  backgroundColor:"#2C3E50",
+                  borderRadius: 3,
+                }}
+                containerStyle={{marginTop:10}}
+                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+                onPress={ () => {
+                  favoriteOverlay()
+                }}
+              />
+              </Overlay>
             </View>
 
             <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 450 }}>

@@ -50,7 +50,7 @@ export default function SignUpScreen({ route, navigation }) {
     console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
-     
+
     }
   };
 
@@ -58,7 +58,7 @@ export default function SignUpScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView>
-      <Text style={styles.title}>Informations complementaires</Text>
+        <Text style={styles.title}>Informations complementaires</Text>
         <View style={styles.addressContainter}>
           <Text style={styles.subtile}>Où je vis:</Text>
           <View style={styles.address}>
@@ -122,28 +122,20 @@ export default function SignUpScreen({ route, navigation }) {
             onPress={async () => {
               if ((maison != false || appartement != false) && (ponctuelle != false || regular != false)) {
                 var data = new FormData();
-      data.append('image', {
-        uri: image,
-        type: 'image/jpeg',
-        name: 'image.jpg'
-      });
-      data.append('userInfo', JSON.stringify({
-        zipcode: codePostal,
-        city: ville,
-        livingPlace : maison,
-        guardType: ponctuelle,
-      }))
-      // var rawResponse = await fetch("http://172.16.190.17:3000/users/upload", {
-      //   method: 'post',
-      //   body: data
-      // })
-      // var response = await rawResponse.json()
-      // var url = response.resultCloudinary.url
-      // console.log(url)
-    
+                data.append('image', {
+                  uri: image,
+                  type: 'image/jpeg',
+                  name: 'image.jpg'
+                });
+                data.append('userInfo', JSON.stringify({
+                  zipcode: codePostal,
+                  city: ville,
+                  livingPlace: maison,
+                  guardType: ponctuelle,
+                }))
+
                 const request = await fetch(`http://192.168.1.5:3000/users/signup-more/${token}`, {
                   method: "POST",
-                  // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                   body: data
                 })
                 const reponse = await request.json()
