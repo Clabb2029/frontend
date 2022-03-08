@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
-import { CheckBox, Icon, Switch } from 'react-native-elements';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import {useSelector} from 'react-redux';
+import { StyleSheet, Text, View, TextInput, Image, ScrollView } from 'react-native';
+import { CheckBox, Button } from 'react-native-elements';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
+import * as ImagePicker from 'expo-image-picker';
 
 
-function CustomButton({ onPress, text, type = "PRIMARY", bgColor, fgColor }) {
-  return (
-    <Pressable onPress={onPress}
-      style={[styles.containerButton, styles[`container_${type}`],
-      bgColor ? { backgroundColor: bgColor } : {}
-      ]}>
-      <Text
-        style={[styles.text, styles[`text_${type}`],
-        fgColor ? { color: fgColor } : {}
-        ]}>{text}</Text>
-    </Pressable>
-  );
-}
 
 function CustomInputs({ value, setValue, placeholder, secureTextEntry }) {
   return (
@@ -33,50 +21,69 @@ function CustomInputs({ value, setValue, placeholder, secureTextEntry }) {
 }
 
 
+export default function SignUpScreen({ route, navigation }) {
 
-export default function SignUpScreen( { route, navigation }) {
-
-  const  token  = useSelector(state => state.token)
+  const token = useSelector(state => state.token)
   const [codePostal, setCodePostal] = useState('');
   const [ville, setVille] = useState('');
   const [errorSignUp, setErrorSignUp] = useState('')
 
- // Checkbox maison / appartement
+  // Checkbox maison / appartement
   const [maison, setMaison] = useState(false);
   const [appartement, setAppartement] = useState(false);
 
   // gardes regulière ou ponctuelle
   const [ponctuelle, setPonctuelle] = useState(false);
-  const [regular,setRegular] = useState(false)
+  const [regular, setRegular] = useState(false)
+
+  // Sélection avatar via pelicule photo : 
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    console.log(result);
+    if (!result.cancelled) {
+      setImage(result.uri);
+     
+    }
+  };
+
 
   return (
     <View style={styles.container}>
+      <ScrollView>
       <Text style={styles.title}>Informations complementaires</Text>
-      <View style={styles.addressContainter}>
-        <Text style={styles.subtile}>Où je vis:</Text>
-        <View style={styles.address}>
-          <CustomInputs placeholder="Code Postal" value={codePostal} setValue={setCodePostal} />
-          <CustomInputs placeholder="Ville" value={ville} setValue={setVille} />
+        <View style={styles.addressContainter}>
+          <Text style={styles.subtile}>Où je vis:</Text>
+          <View style={styles.address}>
+            <CustomInputs placeholder="Code Postal" value={codePostal} setValue={setCodePostal} />
+            <CustomInputs placeholder="Ville" value={ville} setValue={setVille} />
+          </View>
         </View>
-      </View>
-      <View style={styles.containerCheckbox}>
-        <CheckBox
-          center
-          title="Appartement"
-          checkedIcon="dot-circle-o"
-          uncheckedIcon="circle-o"
-          checked={appartement}
-          onPress={() => {setAppartement(true);setMaison(false)}}
-        />
-        <CheckBox
-          center
-          title="Maison"
-          checkedIcon="dot-circle-o"
-          uncheckedIcon="circle-o"
-          checked={maison}
-          onPress={() => {setAppartement(false);setMaison(true)}}
-        />
-      </View>
+        <View style={styles.containerCheckbox}>
+          <CheckBox
+            center
+            title="Appartement"
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            checked={appartement}
+            onPress={() => { setAppartement(true); setMaison(false) }}
+          />
+          <CheckBox
+            center
+            title="Maison"
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            checked={maison}
+            onPress={() => { setAppartement(false); setMaison(true) }}
+          />
+        </View>
 
         <View style={styles.gardeType}>
           <Text style={styles.subtile}>Je cherche des gardes:</Text>
@@ -87,7 +94,7 @@ export default function SignUpScreen( { route, navigation }) {
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
               checked={ponctuelle}
-              onPress={() => {setRegular(false);setPonctuelle(true)}}
+              onPress={() => { setRegular(false); setPonctuelle(true) }}
             />
             <CheckBox
               center
@@ -95,33 +102,68 @@ export default function SignUpScreen( { route, navigation }) {
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"
               checked={regular}
-              onPress={() => {setRegular(true);setPonctuelle(false)}}
+              onPress={() => { setRegular(true); setPonctuelle(false) }}
             />
-        </View>
-        <CustomButton text="Valider"
-          onPress={async () => {
-            if((maison!=false || appartement !=false)&&(ponctuelle!=false || regular !=false)){
-            const request = await fetch(`http://172.16.190.17:3000/users/signup-more/${token}`, {
-              method: "PUT",
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: `zipcode=${codePostal}&city=${ville}&livingPlace=${maison}&guardType=${ponctuelle}`
-            })
-            const data = await request.json()
-            if (data.result) {
-              navigation.navigate('BottomNavigator')
-            }else{
-              setErrorSignUp(data.error)
-            }
-          }else{
-            setErrorSignUp("Veuillez selectionner une checkbox")
-          }
-        }} />  
-          <View>
-          <Text style={styles.subtile}>Renseigner ces informations plus tard ! 
-        <MaterialCommunityIcons style={{ marginLeft: 350 }} name="arrow-right-bold-circle-outline" size={24} color="#2C3E50"
-        onPress={()=> navigation.navigate('BottomNavigator')} /></Text>
           </View>
-      </View>
+          <Text style={styles.subtile}>Choisir mon image de profil:</Text>
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <Button title="Choisir une image"
+              buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
+              containerStyle={{ width: 100, marginRight: 15, marginVertical: 10 }}
+              titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+              onPress={pickImage} />
+            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+          </View>
+          <View style={{ borderBottomColor: '#2C3E50', borderBottomWidth: 1, margin: 20 }} />
+          <Button title="Valider mon inscription"
+            buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }}
+            containerStyle={{ width: 315, marginLeft: 20, marginVertical: 10 }}
+            titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+            onPress={async () => {
+              if ((maison != false || appartement != false) && (ponctuelle != false || regular != false)) {
+                var data = new FormData();
+      data.append('image', {
+        uri: image,
+        type: 'image/jpeg',
+        name: 'image.jpg'
+      });
+      data.append('userInfo', JSON.stringify({
+        zipcode: codePostal,
+        city: ville,
+        livingPlace : maison,
+        guardType: ponctuelle,
+      }))
+      // var rawResponse = await fetch("http://172.16.190.17:3000/users/upload", {
+      //   method: 'post',
+      //   body: data
+      // })
+      // var response = await rawResponse.json()
+      // var url = response.resultCloudinary.url
+      // console.log(url)
+    
+                const request = await fetch(`http://192.168.1.5:3000/users/signup-more/${token}`, {
+                  method: "POST",
+                  // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: data
+                })
+                const reponse = await request.json()
+                console.log(reponse)
+                if (reponse.result) {
+                  navigation.navigate('BottomNavigator')
+                } else {
+                  setErrorSignUp(reponse.error)
+                }
+              } else {
+                setErrorSignUp("Veuillez selectionner une checkbox")
+              }
+            }} />
+          <View>
+            <Text style={styles.subtile}>Renseigner ces informations plus tard !
+              <MaterialCommunityIcons style={{ marginLeft: 350 }} name="arrow-right-bold-circle-outline" size={24} color="#2C3E50"
+                onPress={() => navigation.navigate('BottomNavigator')} /></Text>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
