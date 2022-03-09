@@ -64,7 +64,7 @@ export default function MapScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch('http://192.168.1.5:3000/users-position');
+      const rawData = await fetch('http://172.16.190.12:3000/users-position');
       const data = await rawData.json();
       setUserOwnerData(data.usersOwner.sort())
     }

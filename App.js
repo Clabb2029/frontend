@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 //redux et reducer 
 import token from './reducers/token'
 import userID from './reducers/userID'
+import favoritesList from './reducers/favorites';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers} from 'redux';
 
@@ -35,7 +36,7 @@ import SignInScreen from './screens/SignInScreen'
 import SignUpScreen from './screens/SignUpScreen'
 
 
-const store = createStore(combineReducers({ token, userID }))
+const store = createStore(combineReducers({ token, userID , favoritesList}))
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
