@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState, useEffect } from 'react';
 import {useSelector} from 'react-redux';
 import { useDispatch } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 
@@ -55,6 +56,9 @@ export default function ProfilScreen({ route }) {
   const [userInfo, setUserInfo] = useState([])
   const { userID } = route.params;
   const  token  = useSelector(state => state.token)
+
+AsyncStorage.setItem("token", token)
+
   const currentUserID = useSelector(state => state.userID)
 
   useEffect(() => {

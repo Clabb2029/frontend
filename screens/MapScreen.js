@@ -86,9 +86,10 @@ export default function MapScreen(props) {
   const [autres, setAutres] = useState(false);
 
   // Filtres des users :
-  dataFiltered = userOwnerData
+  const [petChoiceList, setPetChoiceList] = useState([])
+  var dataFiltered = userOwnerData
   if (chien == true) {
-    var dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chien")
+     dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chien")
   }
   if (chat == true) {
     dataFiltered = userOwnerData.filter(pet => pet.petChoice == "chat")
@@ -102,6 +103,22 @@ export default function MapScreen(props) {
   if (autres == true){
     dataFiltered = userOwnerData.filter(pet => pet.petChoice == "autres")
   }
+ 
+  // if (chien == true) {
+  //   setPetChoiceList([...petChoiceList, 'chien'])
+  // }
+  // if (chat == true) {
+  //   setPetChoiceList([...petChoiceList, 'chat'])
+  // }
+  // if (lapin == true) {
+  //   setPetChoiceList([...petChoiceList, 'lapin'])
+  // }
+  // if (cheval == true) {
+  //   setPetChoiceList([...petChoiceList, 'cheval'])
+  // }
+  // if (autres == true){
+  //   setPetChoiceList([...petChoiceList, 'autres'])
+  // }
 
   // Affichage des profils users : 
   const [profilVisible, setProfilVisible] = useState(false)
@@ -275,7 +292,7 @@ export default function MapScreen(props) {
           }}>
           <Marker coordinate={{ latitude: currentLatitude, longitude: currentLongitude }}
             title="Votre position"
-            pinColor='#2C3E50'
+            pinColor='#D35400'
             draggable  // Rendre le marqueur drag & dropable
             opacity={0.5}  // Modifier l'opacité
           />

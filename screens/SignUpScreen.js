@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-nati
 import { CheckBox, Icon, Switch, SocialIcon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
@@ -105,6 +105,7 @@ var handleSubmitSignup = async () => {
       setErrorSignUp('')
       dispatch({type: 'addToken', token: response.userSaved.token})
       dispatch({type: 'addUserID', userID: response.userSaved._id})
+      AsyncStorage.setItem({"pseudo": pseudo})
      props.navigation.navigate('MoreInfoScreen', { token: response.userSaved.token })
     } else if (response.error === "email déjà utilisé") {
      setErrorSignUp("Email déjà utilisé")
