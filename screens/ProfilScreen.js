@@ -5,6 +5,7 @@ import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState, useEffect } from 'react';
 import {useSelector} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 
@@ -46,6 +47,8 @@ export default function ProfilScreen({ route }) {
     AlegreyaSans_900Black_Italic,
   });
 
+  const dispatch = useDispatch()
+
   // Récupération des données du profil :
   const [reviewSender, setReviewSender] = useState([])
   const [userData, setUserData] = useState([])
@@ -56,7 +59,7 @@ export default function ProfilScreen({ route }) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`http://192.168.1.5:3000/users/${userID}`);
+      const rawData = await fetch(`http://172.16.190.12:3000/users/${userID}`);
       const data = await rawData.json();
       setUserData(data.reviews)
       setUserInfo(data.userInfo)
@@ -64,7 +67,7 @@ export default function ProfilScreen({ route }) {
     }
     loadData();
   }, []);
-  console.log(userInfo.photos)
+ 
   // Calcul de la moyenne des notes
   var totalRate = 0;
   var averageRate = []
@@ -256,22 +259,26 @@ const favoriteOverlay = () => {
 
               <MaterialCommunityIcons name="account-star" size={29} color={colorFavorite} style={{ marginRight: 10 }} 
               onPress={ async () => {
-                const request = await fetch(`http://192.168.1.5:3000/add-favorite/${token}`, {
+                const request = await fetch(`http://172.16.190.12:3000/add-favorite/${token}`, {
                 method: "POST",
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `id_user=${userID}&pseudo=${userInfo.pseudo}&avatar=${userInfo.avatar}`
                 })
                 const response = await request.json()
-                if (response.result = true){
-                  setFavorisOK(`${userInfo.pseudo} a bien été rajouté à vos favoris`)
+                console.log(response)
+                if (response.result == true){
+                  setFavorisOK(`${userInfo.pseudo} a bien été rajouté à vos favoris !`)
                   favoriteOverlay()
                   setColorFavorite('#D35400')
+                  dispatch({type: 'addFavorites', favorites : userInfo})
                 } else {
                   setFavorisOK(`${userInfo.pseudo} est déjà dans vos favoris ! `)
+                  favoriteOverlay()
+                  setColorFavorite('#D35400')
                 }
               }}/>
-              <Overlay isVisible={visibleOK} overlayStyle={{ width: 300, height: 100 }}>
-              <Text>{favorisOK}</Text>
+              <Overlay isVisible={visibleOK} overlayStyle={{ width: 300, height: 150 }}>
+              <Text style={styles.h6}>{favorisOK}</Text>
               <Button
                 title="OK"
                 buttonStyle={{
@@ -310,7 +317,7 @@ const favoriteOverlay = () => {
                   toggleOverlay()
                   var userInfoID = userInfo._id 
                   console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
-                  await fetch('http://192.168.72.114:3000/send-message/', {
+                  await fetch('http://172.16.190.12:3000/send-message/', {
                     method: "POST",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `id_receiver=${userInfoID}&id_sender=${currentUserID}&message=${message}&createdAt=${Date.now()}&read=${read}`
