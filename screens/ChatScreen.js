@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import socketIOClient from "socket.io-client";
 
 // Pensez à changer l'adresse ci-dessous avec votre IP locale !
-var socket = socketIOClient("http://192.168.43.122:3000");
+var socket = socketIOClient("http://192.168.72.114:3000");
 
 export default function ChatScreen(props) {
   

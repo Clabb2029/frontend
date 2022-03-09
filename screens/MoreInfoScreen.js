@@ -101,7 +101,7 @@ export default function SignUpScreen( { route, navigation }) {
         <CustomButton text="Valider"
           onPress={async () => {
             if((maison!=false || appartement !=false)&&(ponctuelle!=false || regular !=false)){
-            const request = await fetch(`http://192.168.43.122:3000/users/signup-more/${token}`, {
+            const request = await fetch(`http://192.168.72.114:3000/users/signup-more/${token}`, {
               method: "PUT",
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: `zipcode=${codePostal}&city=${ville}&livingPlace=${maison}&guardType=${ponctuelle}`

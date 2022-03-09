@@ -59,6 +59,8 @@ export default function ProfilScreen({route, navigation}) {
  const [visible, setVisible] = useState(false);
  const [message, setMessage] = useState('')
 
+  const read = false 
+
  const toggleOverlay = () => {
   setVisible(!visible);
 };
@@ -67,7 +69,7 @@ export default function ProfilScreen({route, navigation}) {
 
 useEffect(() => {
  const loadData = async  () => {
-   const rawData = await fetch(`http://192.168.43.122:3000/users/${userID}`);
+   const rawData = await fetch(`http://192.168.72.114:3000/users/${userID}`);
    const data = await rawData.json();
    setUserData(data.reviews)
    setUserInfo(data.userInfo)
@@ -241,10 +243,10 @@ for (var j = 0; j < 5; j++) {
                   toggleOverlay()
                   var userInfoID = userInfo._id 
                   console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
-                  await fetch('http://192.168.43.122:3000/send-message/', {
+                  await fetch('http://192.168.72.114:3000/send-message/', {
                     method: "POST",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `participant1=${userInfoID}&participant2=${currentUserID}&message=${message}&createdAt=${Date.now()}`
+                    body: `id_receiver=${userInfoID}&id_sender=${currentUserID}&message=${message}&createdAt=${Date.now()}&read=${read}`
                   })
                   setMessage()
                 }}

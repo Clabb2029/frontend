@@ -72,7 +72,7 @@ export default function SignInScreen(props) {
 
 var handleSubmitSignin = async () => {
 
-  var request = await fetch('http://172.16.190.17:3000/users/signin', {
+  var request = await fetch('http://192.168.72.114:3000/users/signin', {
       method: "POST",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `email=${email}&password=${password}`
@@ -80,6 +80,7 @@ var handleSubmitSignin = async () => {
   const response = await request.json() 
   if (response.result == true){
     dispatch({type: 'addToken', token: response.user.token})
+    dispatch({type: 'addUserID', userID: response.user._id})
     props.navigation.navigate('BottomNavigator')
   }else{
     setErrorSignIn(response.error)
