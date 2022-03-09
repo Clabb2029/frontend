@@ -72,7 +72,11 @@ export default function SignInScreen(props) {
 
 var handleSubmitSignin = async () => {
 
+<<<<<<< HEAD
   var request = await fetch('http://192.168.72.114:3000/users/signin', {
+=======
+  var request = await fetch('http://192.168.1.5:3000/users/signin', {
+>>>>>>> 82c519d4a20d8393f7b4d7b3ba5275d706fbc61c
       method: "POST",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `email=${email}&password=${password}`

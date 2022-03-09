@@ -1,6 +1,6 @@
 import { StyleSheet, View, ScrollView, Text, TouchableOpacity, DevSettings, Image, Dimensions, TextInput} from 'react-native';
 import { Tabs } from '@ant-design/react-native';
-import { Badge, ListItem, Overlay, Button } from 'react-native-elements';
+import { Badge, ListItem, Overlay, Button, Tooltip } from 'react-native-elements';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState, useEffect } from 'react';
@@ -28,7 +28,7 @@ import {
 } from '@expo-google-fonts/alegreya-sans';
 
 
-export default function ProfilScreen({route, navigation}) {
+export default function ProfilScreen({ route }) {
   let [fontsLoaded] = useFonts({
     AlegreyaSans_100Thin,
     AlegreyaSans_100Thin_Italic,
@@ -47,14 +47,40 @@ export default function ProfilScreen({route, navigation}) {
   });
 
   // Récupération des données du profil :
- const [reviewSender, setReviewSender] = useState([])
- const [userData, setUserData] = useState([])
- const [userInfo, setUserInfo] = useState([])
- const { userID } = route.params;
+  const [reviewSender, setReviewSender] = useState([])
+  const [userData, setUserData] = useState([])
+  const [userInfo, setUserInfo] = useState([])
+  const { userID } = route.params;
+  const  token  = useSelector(state => state.token)
+  const currentUserID = useSelector(state => state.userID)
 
- const  token  = useSelector(state => state.token)
- const currentUserID = useSelector(state => state.userID)
+  useEffect(() => {
+    const loadData = async () => {
+      const rawData = await fetch(`http://192.168.1.5:3000/users/${userID}`);
+      const data = await rawData.json();
+      setUserData(data.reviews)
+      setUserInfo(data.userInfo)
+      setReviewSender(data.reviewSender)
+    }
+    loadData();
+  }, []);
+  console.log(userInfo.photos)
+  // Calcul de la moyenne des notes
+  var totalRate = 0;
+  var averageRate = []
+  for (var j = 0; j < userData.length; j++) {
+    totalRate += userData[j].rate
+    var average = Math.round(totalRate / userData.length);
+  }
+  for (var j = 0; j < 5; j++) {
+    var color = {};
+    if (j < average) {
+      color = '#D35400'
+    } else { color = '#2C3E50' }
+    averageRate.push(<FontAwesome name="star" size={24} color={color} />)
+  }
 
+<<<<<<< HEAD
  //Overlay sending message
  const [visible, setVisible] = useState(false);
  const [message, setMessage] = useState('')
@@ -122,34 +148,78 @@ for (var j = 0; j < 5; j++) {
     </ListItem.Content>
   </ListItem>)
 })
+=======
+  // Eléments à injecter dans l'onglet Avis
+  var noReviews = "";
+  if (userData.length === 0) {
+    noReviews = "Pas encore d'avis !"
+  }
+  let userReviews = reviewSender.map((review, e) => {
+    // Notes
+    var rating = []
+    for (var j = 0; j < 5; j++) {
+      var color = {};
+      if (j < review.rate) {
+        color = '#D35400'
+      } else { color = '#2C3E50' }
+      rating.push(<FontAwesome name="star" size={24} color={color} />)
+    }
+    return (
+      <ListItem key={e} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <ListItem.Content>
+          <ListItem.Title style={styles.h6}>
+            {review.id_sender.pseudo}
+          </ListItem.Title>
+          <View style={{ flexDirection: 'row' }}>
+            {rating}
+          </View>
+          <ListItem.Subtitle style={styles.textReview}>{review.message}</ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem>)
+  })
+>>>>>>> 82c519d4a20d8393f7b4d7b3ba5275d706fbc61c
 
   // Elements à injecter dans le caroussel d'images
+  const [index, setIndex] = useState(0)
   const isCarousel = useRef(null)
   const SLIDER_WIDTH = Dimensions.get('window').width
   const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1)
-  const data = [
-    {
-      imgUrl: require('../assets/chien1.jpeg')
-    },
-    {
-      imgUrl: require('../assets/chien2.jpeg')
-    },
-    {
-      imgUrl: require('../assets/chien3.jpeg')
-    }
-  ]
+
   const CarouselCardItem = ({ item, index }) => {
     return (
-      <View style={styles.containerCarousel}>
+      <View style={styles.containerCarousel} key={index}>
         <Image
-          source={item.imgUrl}
+          source={{uri : item}}
           style={styles.image}
         />
       </View>
 
     )
   }
-  const [index, setIndex] = useState(0)
+// Affichage des badges :
+let badgeName = ''
+if (userInfo.guardType == true){
+badgeName = 'Régulière'
+} 
+if (userInfo.guardType == false) {
+  badgeName ='Ponctuelle'}
+
+// Envois des messages : 
+const [visible, setVisible] = useState(false);
+const [message, setMessage] = useState('')
+const toggleOverlay = () => {
+  setVisible(!visible);
+};
+
+
+// Ajout en favoris :
+const [favorisOK, setFavorisOK] = useState('');
+const [visibleOK, setVisibleOK] = useState(false);
+const [colorFavorite, setColorFavorite] = useState('#2C3E50')
+const favoriteOverlay = () => {
+  setVisibleOK(!visibleOK)
+}
 
   // Entête nav du haut
   const tabs = [
@@ -165,7 +235,7 @@ for (var j = 0; j < 5; j++) {
       <View style={{ flex: 1, marginTop: 50 }}>
         <Image
           style={styles.avatar}
-          source={require('../assets/avatar.png')}
+          source={{ uri: userInfo.avatar }}
         ></Image>
         {/* TabBar :  */}
         <Tabs
@@ -217,7 +287,37 @@ for (var j = 0; j < 5; j++) {
               onPress={toggleOverlay}       
               />
 
-              <MaterialCommunityIcons name="account-star" size={29} color="#2C3E50" style={{ marginRight: 10 }} />
+              <MaterialCommunityIcons name="account-star" size={29} color={colorFavorite} style={{ marginRight: 10 }} 
+              onPress={ async () => {
+                const request = await fetch(`http://192.168.1.5:3000/add-favorite/${token}`, {
+                method: "POST",
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `id_user=${userID}&pseudo=${userInfo.pseudo}&avatar=${userInfo.avatar}`
+                })
+                const response = await request.json()
+                if (response.result = true){
+                  setFavorisOK(`${userInfo.pseudo} a bien été rajouté à vos favoris`)
+                  favoriteOverlay()
+                  setColorFavorite('#D35400')
+                } else {
+                  setFavorisOK(`${userInfo.pseudo} est déjà dans vos favoris ! `)
+                }
+              }}/>
+              <Overlay isVisible={visibleOK} overlayStyle={{ width: 300, height: 100 }}>
+              <Text>{favorisOK}</Text>
+              <Button
+                title="OK"
+                buttonStyle={{
+                  backgroundColor:"#2C3E50",
+                  borderRadius: 3,
+                }}
+                containerStyle={{marginTop:10}}
+                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+                onPress={ () => {
+                  favoriteOverlay()
+                }}
+              />
+              </Overlay>
             </View>
 
             <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 450 }}>
@@ -273,7 +373,7 @@ for (var j = 0; j < 5; j++) {
             <Text style={styles.text}>{userInfo.description}</Text>
             <Text style={styles.h6}>Type de Garde souhaitée : </Text>
             <View >
-              <Badge value={userInfo.guardType} badgeStyle={styles.badge}>
+              <Badge value={badgeName} badgeStyle={styles.badge}>
               </Badge>
             </View>
             <Text style={styles.h6}>Disponibilité souhaitée :</Text>
@@ -285,15 +385,15 @@ for (var j = 0; j < 5; j++) {
               layout="tinder"
               layoutCardOffset={10}
               ref={isCarousel}
-              data={data}
+              data={userInfo.photos}
               renderItem={CarouselCardItem}
               sliderWidth={SLIDER_WIDTH}
               itemWidth={ITEM_WIDTH}
               inactiveSlideShift={0}
               onSnapToItem={(index) => setIndex(index)}
               useScrollView={true} />
-            <Pagination
-              dotsLength={data.length}
+            {/* <Pagination
+              dotsLength={userInfo.photos.length}
               activeDotIndex={index}
               carouselRef={isCarousel}
               dotStyle={{
@@ -306,7 +406,7 @@ for (var j = 0; j < 5; j++) {
               inactiveDotOpacity={0.4}
               inactiveDotScale={0.6}
               tappableDots={true}
-            />
+            /> */}
           </View>
 
           {/* Tab Avis : */}
@@ -335,7 +435,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginLeft: 135,
-    marginBottom: 15
+    marginBottom: 15,
+    borderRadius: 50
   },
   tabs: {
     paddingHorizontal: 16,

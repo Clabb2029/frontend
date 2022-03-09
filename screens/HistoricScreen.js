@@ -63,7 +63,11 @@ export default function ProfilScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
+<<<<<<< HEAD
       const rawData = await fetch('http://192.168.72.114:3000/agenda');
+=======
+      const rawData = await fetch(`http://192.168.1.5:3000/agenda/:${token}`);
+>>>>>>> 82c519d4a20d8393f7b4d7b3ba5275d706fbc61c
       const data = await rawData.json();
       setAgendaInfo(data.agendaInfo.sort())
     }
@@ -124,7 +128,11 @@ export default function ProfilScreen(props) {
               titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
               onPress={async () => {
                 toggleOverlay()
+<<<<<<< HEAD
                 await fetch('http://192.168.72.114:3000/add-review/', {
+=======
+                await fetch('http://192.168.1.5:3000/add-review/', {
+>>>>>>> 82c519d4a20d8393f7b4d7b3ba5275d706fbc61c
                   method: "POST",
                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                   body: `id_sender=${date.id_receiver}&id_receiver=${date.id_sender._id}&message=${avis}&rate=${Number(rate)}`
@@ -180,7 +188,11 @@ export default function ProfilScreen(props) {
                 <View style={{ flexDirection: 'row' }}>
                   <Button title="ACCEPTER"
                     onPress={async () => {
+<<<<<<< HEAD
                       const request = await fetch('http://192.168.72.114:3000/agenda/', {
+=======
+            const request = await fetch('http://192.168.1.5:3000/agenda/', {
+>>>>>>> 82c519d4a20d8393f7b4d7b3ba5275d706fbc61c
                         method: "PUT",
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: `id=${agendaID}&status=Validé`
@@ -199,7 +211,11 @@ export default function ProfilScreen(props) {
                     titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
                   <Button title="REFUSER"
                     onPress={async () => {
+<<<<<<< HEAD
                       const request = await fetch('http://192.168.72.114:3000/agenda/', {
+=======
+                      const request = await fetch('http://192.168.1.5:3000/agenda/', {
+>>>>>>> 82c519d4a20d8393f7b4d7b3ba5275d706fbc61c
                         method: "PUT",
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: `id=${agendaID}&status=Refusé`
