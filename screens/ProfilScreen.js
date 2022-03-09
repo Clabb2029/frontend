@@ -80,16 +80,6 @@ export default function ProfilScreen({ route }) {
     averageRate.push(<FontAwesome name="star" size={24} color={color} />)
   }
 
-<<<<<<< HEAD
- //Overlay sending message
- const [visible, setVisible] = useState(false);
- const [message, setMessage] = useState('')
-
-  const read = false 
-
- const toggleOverlay = () => {
-  setVisible(!visible);
-};
 
 
 
@@ -124,31 +114,7 @@ var noReviews = "";
 if (userData.length === 0){
   noReviews = "Pas encore d'avis !"
  }
-let userReviews = reviewSender.map((review, e) => {
-  // Notes
-var rating = []
-for (var j = 0; j < 5; j++) {
-  var color = {};
-  if (j < review.rate) {
-    color = '#D35400' 
-  } else {color = '#2C3E50' }
-  rating.push(<FontAwesome name="star" size={24} color={color} />)
-}
-  return (
-<ListItem key={e} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-    <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
-    <ListItem.Content>
-      <ListItem.Title style={styles.h6}>
-        {review.id_sender.pseudo}
-      </ListItem.Title>
-      <View style={{ flexDirection: 'row' }}>
-        {rating}
-      </View>
-      <ListItem.Subtitle style={styles.textReview}>{review.message}</ListItem.Subtitle>
-    </ListItem.Content>
-  </ListItem>)
-})
-=======
+
   // Eléments à injecter dans l'onglet Avis
   var noReviews = "";
   if (userData.length === 0) {
@@ -178,7 +144,6 @@ for (var j = 0; j < 5; j++) {
         </ListItem.Content>
       </ListItem>)
   })
->>>>>>> 82c519d4a20d8393f7b4d7b3ba5275d706fbc61c
 
   // Elements à injecter dans le caroussel d'images
   const [index, setIndex] = useState(0)
@@ -206,6 +171,8 @@ if (userInfo.guardType == false) {
   badgeName ='Ponctuelle'}
 
 // Envois des messages : 
+
+const read = false 
 const [visible, setVisible] = useState(false);
 const [message, setMessage] = useState('')
 const toggleOverlay = () => {
