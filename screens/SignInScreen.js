@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-nati
 import { SocialIcon, } from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ipAdress from '../ip.js';
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
@@ -21,11 +22,11 @@ function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
 function SocialMediaButtons(props) {
 
   const onGoogleSignInPressed = () => {
-      console.warn('"Gloogloo')
+      
   };
 
   const onFacebookSingInPressed = () => {
-      console.warn('faceAbook')
+      
   };
   return (
       <>
@@ -73,7 +74,7 @@ export default function SignInScreen(props) {
 
 var handleSubmitSignin = async () => {
 
-  var request = await fetch('http://192.168.72.163:3000/users/signin', {
+  var request = await fetch(`${ipAdress}/users/signin`, {
       method: "POST",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `email=${email}&password=${password}`

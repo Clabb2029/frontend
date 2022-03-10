@@ -4,6 +4,7 @@ import { CheckBox, Icon, Switch, SocialIcon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ipAdress from '../ip.js';
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
@@ -94,7 +95,7 @@ var handleSubmitSignup = async () => {
 
   if(owner!=false || sitter !=false){
 
-    var request = await fetch('http://192.168.72.163:3000/users/signup', {
+    var request = await fetch(`${ipAdress}/users/signup`, {
       method: "POST",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `pseudo=${pseudo}&email=${email}&password=${password}&status=${owner}&optinEmails=${optinEmails}`

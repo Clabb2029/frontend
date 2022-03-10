@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Carousel, { Pagination } from 'react-native-snap-carousel'
+import Carousel from 'react-native-snap-carousel'
 
 import AppLoading from 'expo-app-loading';
 import {
@@ -57,13 +57,13 @@ export default function ProfilScreen({ route }) {
   const { userID } = route.params;
   const  token  = useSelector(state => state.token)
 
-AsyncStorage.setItem("token", token)
+  AsyncStorage.setItem("token", token)
 
   const currentUserID = useSelector(state => state.userID)
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`http://192.168.72.163:3000/users/${userID}`);
+      const rawData = await fetch(`https://petfriendsback.herokuapp.com/users/${userID}`);
       const data = await rawData.json();
       setUserData(data.reviews)
       setUserInfo(data.userInfo)
@@ -92,7 +92,7 @@ AsyncStorage.setItem("token", token)
 
 useEffect(() => {
  const loadData = async  () => {
-   const rawData = await fetch(`http://192.168.72.163:3000/users/${userID}`);
+   const rawData = await fetch(`https://petfriendsback.herokuapp.com/users/${userID}`);
    const data = await rawData.json();
    setUserData(data.reviews)
    setUserInfo(data.userInfo)
@@ -263,7 +263,7 @@ const favoriteOverlay = () => {
 
               <MaterialCommunityIcons name="account-star" size={29} color={colorFavorite} style={{ marginRight: 10 }} 
               onPress={ async () => {
-                const request = await fetch(`http://192.168.72.163:3000/add-favorite/${token}`, {
+                const request = await fetch(`https://petfriendsback.herokuapp.com/add-favorite/${token}`, {
                 method: "POST",
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `id_user=${userID}&pseudo=${userInfo.pseudo}&avatar=${userInfo.avatar}`
@@ -321,7 +321,7 @@ const favoriteOverlay = () => {
                   toggleOverlay()
                   var userInfoID = userInfo._id 
                   console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
-                  await fetch('http://192.168.72.163:3000/send-message/', {
+                  await fetch('https://petfriendsback.herokuapp.com/send-message/', {
                     method: "POST",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `id_receiver=${userInfoID}&id_sender=${currentUserID}&message=${message}&createdAt=${Date.now()}&read=${read}`

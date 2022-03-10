@@ -243,7 +243,7 @@ export default function SettingsScreen(props) {
                 newpassword: password
               }))
 
-              const request = await fetch(`http://172.16.190.12:3000/users/signup-more/${token}`, {
+              const request = await fetch(`${ipAdress}/users/signup-more/${token}`, {
                 method: "POST",
                 body: data
               })

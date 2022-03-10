@@ -89,14 +89,14 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    marginTop: 50
   },
 
   titleContainer: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: 20,
+    marginTop: 50
   },
  
   title: {
@@ -104,19 +104,19 @@ const styles = StyleSheet.create({
   },
 
   flatlist: {
-    marginBottom: 50
+    marginBottom: 50,
   },
 
   message: {
     flexDirection: 'row',
     padding: 10,
     backgroundColor: '#ffffff',
-    marginTop: 1
+    marginTop: 1,
   },
 
   image: {
-    height: 50,
-    width: 50,
+    height: 60,
+    width: 60,
     borderRadius: 30,
     marginRight: 10
   },

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
+import ipAdress from '../ip.js'
+
 
 import AppLoading from 'expo-app-loading';
 import {
@@ -50,7 +52,7 @@ export default function FavoritesScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`http://192.168.72.163:3000/favorites/${token}`);
+      const rawData = await fetch(`${ipAdress}/favorites/${token}`);
       const data = await rawData.json();
       console.log(data.favoris);
       dispatch({ type: 'loadList', list: data.favoris })
@@ -91,7 +93,7 @@ export default function FavoritesScreen(props) {
                 icon={{ name: 'delete', color: 'white' }}
                 buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
                 onPress={async () => {
-                  const request = await fetch(`http://172.16.190.12:3000/delete-favorite/${token}/${favoriteID}`,
+                  const request = await fetch(`${ipAdress}/delete-favorite/${token}/${favoriteID}`,
                     {
                       method: 'DELETE'
                     })
@@ -129,7 +131,7 @@ export default function FavoritesScreen(props) {
             }}
             titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
             onPress={async () => {
-              const request = await fetch(`http://192.168.72.163:3000/delete-favorite/${token}`,
+              const request = await fetch(`${ipAdress}/delete-favorite/${token}`,
                 {
                   method: 'DELETE'
                 })
@@ -138,7 +140,7 @@ export default function FavoritesScreen(props) {
               toggleOverlay()
               var userInfoID = user._id
               console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
-              await fetch('http://172.16.190.12:3000/send-message/', {
+              await fetch(`${ipAdress}/send-message/`, {
                 method: "POST",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `participant1=${userInfoID}&participant2=${currentUserID}&message=${message}&createdAt=${Date.now()}`

@@ -4,7 +4,7 @@ import { CheckBox, Button } from 'react-native-elements';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
-
+import ipAdress from '../ip.js'
 
 
 function CustomInputs({ value, setValue, placeholder, secureTextEntry }) {
@@ -134,7 +134,7 @@ export default function SignUpScreen({ route, navigation }) {
                   guardType: ponctuelle,
                 }))
 
-                const request = await fetch(`http://192.168.72.163:3000/users/signup-more/${token}`, {
+                const request = await fetch(`${ipAdress}/users/signup-more/${token}`, {
                   method: "POST",
                   body: data
                 })

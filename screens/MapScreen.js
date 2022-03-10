@@ -6,6 +6,7 @@ import { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
 import {useSelector} from 'react-redux';
+import ipAdress from '../ip.js'
 
 import AppLoading from 'expo-app-loading';
 import {
@@ -65,7 +66,7 @@ export default function MapScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch('http://192.168.72.163:3000/users-position');
+      const rawData = await fetch(`${ipAdress}/users-position`);
       const data = await rawData.json();
       setUserOwnerData(data.usersOwner.sort())
     }
