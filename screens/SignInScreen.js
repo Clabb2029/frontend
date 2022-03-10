@@ -83,7 +83,6 @@ var handleSubmitSignin = async () => {
   if (response.result == true){
     dispatch({type: 'addToken', token: response.user.token})
     dispatch({type: 'addUserID', userID: response.user._id})
-    AsyncStorage.setItem({"pseudo": response.user.pseudo})
     props.navigation.navigate('BottomNavigator')
   }else{
     setErrorSignIn(response.error)

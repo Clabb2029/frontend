@@ -67,7 +67,6 @@ export default function HomeScreen(props) {
   // Récupération du pseudo au chargement de la page :
   useEffect(() => {
     AsyncStorage.getItem('user', function (error, data) {
-      var userData = JSON.parse(data);
       if (pseudo) {
         setMessage(true)
         setPseudo(data.pseudo)
@@ -76,7 +75,7 @@ export default function HomeScreen(props) {
         setMessage(false)
       }
     })
-  }, [isFocused])
+  }, [])
 
   //Affichage de la home différente en fonction de si le user est connu ou pas ! 
   var display = ''

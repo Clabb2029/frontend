@@ -23,6 +23,8 @@ import {
   AlegreyaSans_900Black_Italic,
 } from '@expo-google-fonts/alegreya-sans';
 
+import ipAdress from '../ip.js'
+
 export default function SettingsScreen(props) {
   let [fontsLoaded] = useFonts({
     AlegreyaSans_100Thin,

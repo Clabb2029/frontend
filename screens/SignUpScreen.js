@@ -6,6 +6,8 @@ import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ipAdress from '../ip.js';
 
+import ipAdress from '../ip.js'
+
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
      <Pressable onPress={onPress} 
@@ -106,7 +108,7 @@ var handleSubmitSignup = async () => {
       setErrorSignUp('')
       dispatch({type: 'addToken', token: response.userSaved.token})
       dispatch({type: 'addUserID', userID: response.userSaved._id})
-      AsyncStorage.setItem({"pseudo": pseudo})
+      // AsyncStorage.setItem({"pseudo": pseudo})
      props.navigation.navigate('MoreInfoScreen', { token: response.userSaved.token })
     } else if (response.error === "email déjà utilisé") {
      setErrorSignUp("Email déjà utilisé")

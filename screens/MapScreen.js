@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import {useSelector} from 'react-redux';
 import ipAdress from '../ip.js'
 
+import ipAdress from '../ip.js'
+
 import AppLoading from 'expo-app-loading';
 import {
   useFonts,
@@ -151,7 +153,7 @@ export default function MapScreen(props) {
           </ListItem.Title>
         </ListItem.Content>
         <Image source={icon} style={{width:35, height:35, marginRight:75}}></Image>
-        <ListItem.Content right><Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+        <ListItem.Content right><Button title="Voir" buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
           onPress={() => props.navigation.navigate('ProfilScreen', { userID: data._id })} /></ListItem.Content>
       </ListItem>
     )
@@ -199,13 +201,15 @@ export default function MapScreen(props) {
             style={{ width: 30, height: 32 }}
             resizeMode="contain"
           />
-           <Overlay isVisible={profilVisible} overlayStyle={{ width: 135, height: 180 }}>
+           <Overlay isVisible={profilVisible} overlayStyle={{ width: 200, height: 215 }}>
            <ScrollView>
-           <FontAwesome name="close" size={24} color="#2C3E50" style={{marginLeft:80}} onPress={markerClose}/>
-            <View style={{marginLeft:20}}>
-            <Text style={styles.textOverlay}>{userPseudo}</Text>
-              <Image source={{uri : userAvatar}} style={styles.avatarItem}></Image>
-              <Button title="Voir" buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+           <FontAwesome name="close" size={20} color="#2C3E50" style={{marginLeft:160}} onPress={markerClose}/>
+            <View style={{alignItems:'center'}}>
+              <View style={{alignItems:'center', marginBottom:10}}>
+              <Image source={{uri : userAvatar}} style={styles.avatarOverlay}></Image>
+              <Text style={styles.textOverlay}>{userPseudo}</Text>
+              </View>
+              <Button title="Voir" buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 80, marginVertical: 5 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
           onPress={() => (props.navigation.navigate('ProfilScreen', { userID: userMarkerId }), markerClose() )} />
             </View>
               </ScrollView>
@@ -230,9 +234,9 @@ export default function MapScreen(props) {
             titleStyle={{ color: "#2C3E50", fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
             onPress={toggleOverlay}
           />
-          <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 360 }}>
+          <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 400 }}>
             <ScrollView>
-              <Text style={styles.textOverlay}>Type d'animal à garder : </Text>
+              <Text style={styles.textOverlay}>Sélectionnez une espèce : </Text>
               <CheckBox
                 center
                 title="Chien"
@@ -277,6 +281,7 @@ export default function MapScreen(props) {
                 onPress={toggleOverlay}
                 title="Valider filtres"
                 buttonStyle={{ backgroundColor: '#D35400', borderRadius: 3, }}
+                containerStyle={{marginTop : 15}}
               />
             </ScrollView>
           </Overlay>
@@ -326,12 +331,14 @@ const styles = StyleSheet.create({
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 35,
     textAlign: 'center',
-    marginTop: 25
+    marginTop: 50
   },
   textOverlay: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
-    fontSize: 20
+    fontSize: 20,
+    marginVertical: 10,
+    textAlign: 'center'
   },
   textCheckbox: {
     color: '#2C3E50',
@@ -354,4 +361,9 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius : 50 
   },
+  avatarOverlay: {
+    width: 95,
+    height: 95,
+    borderRadius : 50 
+  }
 });
