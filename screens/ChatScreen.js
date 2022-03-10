@@ -5,10 +5,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {GiftedChat} from 'react-native-gifted-chat'
 
+import ipAdress from '../ip.js'
 // import socketIOClient from "socket.io-client";
 
 // Pensez à changer l'adresse ci-dessous avec votre IP locale !
-var socket = socketIOClient("https://petfriendsback.herokuapp.com/");
+// var socket = socketIOClient("https://petfriendsback.herokuapp.com/");
 
 export default function ChatScreen(props) {
   

@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 
+import ipAdress from '../ip.js'
+
 import AppLoading from 'expo-app-loading';
 import {
   useFonts,
@@ -63,7 +65,7 @@ AsyncStorage.setItem("token", token)
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`https://petfriendsback.herokuapp.com/users/${userID}`);
+      const rawData = await fetch(`${ipAdress}users/${userID}`);
       const data = await rawData.json();
       setUserData(data.reviews)
       setUserInfo(data.userInfo)
@@ -87,12 +89,9 @@ AsyncStorage.setItem("token", token)
     averageRate.push(<FontAwesome name="star" size={24} color={color} />)
   }
 
-
-
-
 useEffect(() => {
  const loadData = async  () => {
-   const rawData = await fetch(`https://petfriendsback.herokuapp.com/users/${userID}`);
+   const rawData = await fetch(`${ipAdress}/users/${userID}`);
    const data = await rawData.json();
    setUserData(data.reviews)
    setUserInfo(data.userInfo)
@@ -139,7 +138,7 @@ if (userData.length === 0){
     }
     return (
       <ListItem key={e} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <Image source={{uri : review.id_sender.avatar}} style={styles.avatarItem}></Image>
         <ListItem.Content>
           <ListItem.Title style={styles.h6}>
             {review.id_sender.pseudo}
@@ -263,7 +262,7 @@ const favoriteOverlay = () => {
 
               <MaterialCommunityIcons name="account-star" size={29} color={colorFavorite} style={{ marginRight: 10 }} 
               onPress={ async () => {
-                const request = await fetch(`https://petfriendsback.herokuapp.com/add-favorite/${token}`, {
+                const request = await fetch(`${ipAdress}/add-favorite/${token}`, {
                 method: "POST",
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `id_user=${userID}&pseudo=${userInfo.pseudo}&avatar=${userInfo.avatar}`
@@ -321,7 +320,7 @@ const favoriteOverlay = () => {
                   toggleOverlay()
                   var userInfoID = userInfo._id 
                   console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
-                  await fetch('https://petfriendsback.herokuapp.com/send-message/', {
+                  await fetch(`${ipAdress}send-message/`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `id_receiver=${userInfoID}&id_sender=${currentUserID}&message=${message}&createdAt=${Date.now()}&read=${read}`
@@ -459,7 +458,8 @@ const styles = StyleSheet.create({
   },
   avatarItem: {
     width: 75,
-    height: 75
+    height: 75,
+    borderRadius : 50
   },
   textReview: {
     fontFamily: 'AlegreyaSans_400Regular',

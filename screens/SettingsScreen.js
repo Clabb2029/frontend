@@ -23,6 +23,8 @@ import {
   AlegreyaSans_900Black_Italic,
 } from '@expo-google-fonts/alegreya-sans';
 
+import ipAdress from '../ip.js'
+
 export default function SettingsScreen(props) {
   let [fontsLoaded] = useFonts({
     AlegreyaSans_100Thin,
@@ -243,7 +245,7 @@ export default function SettingsScreen(props) {
                 newpassword: password
               }))
 
-              const request = await fetch(`https://petfriendsback.herokuapp.com/users/signup-more/${token}`, {
+              const request = await fetch(`${ipAdress}/users/signup-more/${token}`, {
                 method: "POST",
                 body: data
               })

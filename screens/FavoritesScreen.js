@@ -52,7 +52,6 @@ export default function FavoritesScreen(props) {
     const loadData = async () => {
       const rawData = await fetch(`https://petfriendsback.herokuapp.com/favorites/${token}`);
       const data = await rawData.json();
-      console.log(data.favoris);
       dispatch({ type: 'loadList', list: data.favoris })
     }
     loadData();
@@ -99,7 +98,6 @@ export default function FavoritesScreen(props) {
                   if (response.result == true) {
                     dispatch({ type: 'deleteFavorite', position: e })
                   }
-                  console.log(response.favoriteUpdate)
                 }}
               />
             }
@@ -108,7 +106,7 @@ export default function FavoritesScreen(props) {
             <ListItem.Title style={styles.h6}>
               {user.pseudo}
             </ListItem.Title>
-           <Button title={"Voir"} buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 60, marginLeft: 85, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+           <Button title={"Voir"} buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 60, marginLeft: 85, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
               onPressIn={() =>  props.navigation.navigate('ProfilScreen', { userID: user.id_user })} /> 
           </ListItem.Swipeable>
         </ListItem>
@@ -134,7 +132,6 @@ export default function FavoritesScreen(props) {
                   method: 'DELETE'
                 })
                 const response = await request.json()
-                console.log(response)
               toggleOverlay()
               var userInfoID = user._id
               console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
@@ -199,7 +196,7 @@ const styles = StyleSheet.create({
   h6: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
-    fontSize: 20,
+    fontSize: 25,
     textAlign: 'left',
     marginTop: 15,
     marginBottom: 10,
@@ -207,8 +204,8 @@ const styles = StyleSheet.create({
     marginRight: 15
   },
   avatar: {
-    width: 55,
-    height: 55,
+    width: 75,
+    height: 75,
     borderRadius: 50
   },
   nofavorites: {

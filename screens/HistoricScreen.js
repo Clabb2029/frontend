@@ -5,6 +5,8 @@ import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import {useSelector} from 'react-redux';
 
+import ipAdress from '../ip.js'
+
 import AppLoading from 'expo-app-loading';
 import {
   useFonts,
@@ -63,12 +65,15 @@ export default function ProfilScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`https://petfriendsback.herokuapp.com/agenda/:${token}`);
+      const rawData = await fetch(`${ipAdress}/agenda/${token}`);
       const data = await rawData.json();
-      setAgendaInfo(data.agendaInfo.sort())
+      setAgendaInfo(data.agendaInfo)
     }
     loadData();
   }, []);
+
+  // Picto pour donner son avis sur une garde :
+  const [colorPicto, setColorPicto] = useState("#2C3E50")
 
   // Affichage overlay pour donner son avis
   const [rate, setRate] = useState(0)
@@ -87,7 +92,7 @@ export default function ProfilScreen(props) {
   var agendaList = agendaInfo.map((date, i) => {
     if (date.status == "Validé" && new Date(date.beginning) < new Date()) {
       return (<ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <Image source={{uri : date.id_sender.avatar}} style={styles.avatarItem}></Image>
         <ListItem.Content>
           <ListItem.Title style={styles.h6}>
             {date.id_sender.pseudo}
@@ -95,7 +100,7 @@ export default function ProfilScreen(props) {
           <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Content right>
-          <MaterialCommunityIcons name="comment-edit" size={30} color="#2C3E50" style={{ marginRight: 20 }} onPress={toggleOverlay} />
+          <MaterialCommunityIcons name="comment-edit" size={30} color={colorPicto} style={{ marginRight: 20 }} onPress={toggleOverlay} />
           <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 450 }}>
             <Text style={styles.textOverlay}>Avis sur votre garde : </Text>
             <Rating
@@ -124,12 +129,13 @@ export default function ProfilScreen(props) {
               titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
               onPress={async () => {
                 toggleOverlay()
-                await fetch('https://petfriendsback.herokuapp.com/add-review/', {
+                await fetch(`${ipAdress}/add-review/`, {
                   method: "POST",
                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                   body: `id_sender=${date.id_receiver}&id_receiver=${date.id_sender._id}&message=${avis}&rate=${Number(rate)}`
                 })
                 setAvis()
+                setColorPicto('#ECF0F1')
               }}
             />
             <Button
@@ -154,7 +160,7 @@ export default function ProfilScreen(props) {
   var todoList = agendaInfo.map((date, j) => {
     if (date.status == "Validé" && new Date(date.beginning) > new Date()) {
       return (<ListItem key={j} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-        <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+        <Image source={{uri : date.id_sender.avatar}} style={styles.avatarItem}></Image>
         <ListItem.Content>
           <ListItem.Title style={styles.h6}>
             {date.id_sender.pseudo}
@@ -171,7 +177,7 @@ export default function ProfilScreen(props) {
         if (date.status == "En Attente" || date.status == "En attente") {
           return (
             <ListItem key={k} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
-              <Image source={require('../assets/avatar.png')} style={styles.avatarItem}></Image>
+              <Image source={{uri : date.id_sender.avatar}} style={styles.avatarItem}></Image>
               <ListItem.Content>
                 <ListItem.Title style={styles.h6}>
                   {date.id_sender.pseudo}
@@ -180,7 +186,7 @@ export default function ProfilScreen(props) {
                 <View style={{ flexDirection: 'row' }}>
                   <Button title="ACCEPTER"
                     onPress={async () => {
-            const request = await fetch('https://petfriendsback.herokuapp.com/agenda/', {
+            const request = await fetch(`${ipAdress}/agenda/`, {
                         method: "PUT",
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: `id=${agendaID}&status=Validé`
@@ -199,7 +205,7 @@ export default function ProfilScreen(props) {
                     titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
                   <Button title="REFUSER"
                     onPress={async () => {
-                      const request = await fetch('https://petfriendsback.herokuapp.com/agenda/', {
+                      const request = await fetch(`${ipAdress}/agenda/`, {
                         method: "PUT",
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: `id=${agendaID}&status=Refusé`
@@ -348,6 +354,7 @@ const styles = StyleSheet.create({
   },
   avatarItem: {
     width: 75,
-    height: 75
+    height: 75,
+    borderRadius : 50 
   },
 })

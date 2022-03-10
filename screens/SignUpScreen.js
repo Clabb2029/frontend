@@ -5,6 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import ipAdress from '../ip.js'
+
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
      <Pressable onPress={onPress} 
@@ -94,11 +96,7 @@ var handleSubmitSignup = async () => {
 
   if(owner!=false || sitter !=false){
 
-<<<<<<< HEAD
-    var request = await fetch('http://192.168.72.163:3000/users/signup', {
-=======
-    var request = await fetch('https://petfriendsback.herokuapp.com/users/signup', {
->>>>>>> cecile
+    var request = await fetch(`${ipAdress}users/signup`, {
       method: "POST",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `pseudo=${pseudo}&email=${email}&password=${password}&status=${owner}&optinEmails=${optinEmails}`
@@ -109,7 +107,7 @@ var handleSubmitSignup = async () => {
       setErrorSignUp('')
       dispatch({type: 'addToken', token: response.userSaved.token})
       dispatch({type: 'addUserID', userID: response.userSaved._id})
-      AsyncStorage.setItem({"pseudo": pseudo})
+      // AsyncStorage.setItem({"pseudo": pseudo})
      props.navigation.navigate('MoreInfoScreen', { token: response.userSaved.token })
     } else if (response.error === "email déjà utilisé") {
      setErrorSignUp("Email déjà utilisé")
