@@ -6,7 +6,6 @@ import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ipAdress from '../ip.js';
 
-
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
      <Pressable onPress={onPress} 

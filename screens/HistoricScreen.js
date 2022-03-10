@@ -64,7 +64,7 @@ export default function ProfilScreen(props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`${ipAdress}/agenda`);
+      const rawData = await fetch(`${ipAdress}/agenda/${token}`);
       const data = await rawData.json();
       setAgendaInfo(data.agendaInfo)
     }

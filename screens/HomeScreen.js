@@ -106,11 +106,15 @@ export default function HomeScreen(props) {
         </View>
       </View>
   }
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
   return (
     
     [display]
 
-  );
+  );}
 }
 
 const styles = StyleSheet.create({
