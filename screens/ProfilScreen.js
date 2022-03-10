@@ -5,6 +5,8 @@ import { FontAwesome5, FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRef, useState, useEffect } from 'react';
 import {useSelector} from 'react-redux';
+import { useDispatch } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 
@@ -46,12 +48,17 @@ export default function ProfilScreen({ route }) {
     AlegreyaSans_900Black_Italic,
   });
 
+  const dispatch = useDispatch()
+
   // Récupération des données du profil :
   const [reviewSender, setReviewSender] = useState([])
   const [userData, setUserData] = useState([])
   const [userInfo, setUserInfo] = useState([])
   const { userID } = route.params;
   const  token  = useSelector(state => state.token)
+
+AsyncStorage.setItem("token", token)
+
   const currentUserID = useSelector(state => state.userID)
 
   useEffect(() => {
@@ -64,7 +71,7 @@ export default function ProfilScreen({ route }) {
     }
     loadData();
   }, []);
-  console.log(userInfo.photos)
+ 
   // Calcul de la moyenne des notes
   var totalRate = 0;
   var averageRate = []
@@ -262,16 +269,20 @@ const favoriteOverlay = () => {
                 body: `id_user=${userID}&pseudo=${userInfo.pseudo}&avatar=${userInfo.avatar}`
                 })
                 const response = await request.json()
-                if (response.result = true){
-                  setFavorisOK(`${userInfo.pseudo} a bien été rajouté à vos favoris`)
+                console.log(response)
+                if (response.result == true){
+                  setFavorisOK(`${userInfo.pseudo} a bien été rajouté à vos favoris !`)
                   favoriteOverlay()
                   setColorFavorite('#D35400')
+                  dispatch({type: 'addFavorites', favorites : userInfo})
                 } else {
                   setFavorisOK(`${userInfo.pseudo} est déjà dans vos favoris ! `)
+                  favoriteOverlay()
+                  setColorFavorite('#D35400')
                 }
               }}/>
-              <Overlay isVisible={visibleOK} overlayStyle={{ width: 300, height: 100 }}>
-              <Text>{favorisOK}</Text>
+              <Overlay isVisible={visibleOK} overlayStyle={{ width: 300, height: 150 }}>
+              <Text style={styles.h6}>{favorisOK}</Text>
               <Button
                 title="OK"
                 buttonStyle={{

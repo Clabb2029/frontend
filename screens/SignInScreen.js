@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
-import { CheckBox, SocialIcon,Icon, Switch } from 'react-native-elements';
+import { SocialIcon, } from 'react-native-elements';
 import {useDispatch} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
   return (
@@ -81,6 +82,7 @@ var handleSubmitSignin = async () => {
   if (response.result == true){
     dispatch({type: 'addToken', token: response.user.token})
     dispatch({type: 'addUserID', userID: response.user._id})
+    AsyncStorage.setItem({"pseudo": response.user.pseudo})
     props.navigation.navigate('BottomNavigator')
   }else{
     setErrorSignIn(response.error)
