@@ -36,14 +36,14 @@ export default function ChatScreen(props) {
 
 
 
-  useEffect(() => { 
-    socket.on('sendMessageToAll', (newMessageData)=> {
-      setListMessage([...listMessage, newMessageData]);
-        });
-  }, [listMessage]);
+  // useEffect(() => { 
+  //   socket.on('sendMessageToAll', (newMessageData)=> {
+  //     setListMessage([...listMessage, newMessageData]);
+  //       });
+  // }, [listMessage]);
 
 
-  // const [currentMessage, setCurrentMessage] = useState();
+  // // const [currentMessage, setCurrentMessage] = useState();
   // const [listMessage, setListMessage] = useState([]);
 
   // useEffect(() => { 

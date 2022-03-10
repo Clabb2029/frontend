@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import { Input, CheckBox, Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppLoading from 'expo-app-loading';
+import ipAdress from '../ip.js';
+
 import {
   useFonts,
   AlegreyaSans_100Thin,
@@ -22,8 +24,6 @@ import {
   AlegreyaSans_900Black,
   AlegreyaSans_900Black_Italic,
 } from '@expo-google-fonts/alegreya-sans';
-
-import ipAdress from '../ip.js'
 
 export default function SettingsScreen(props) {
   let [fontsLoaded] = useFonts({

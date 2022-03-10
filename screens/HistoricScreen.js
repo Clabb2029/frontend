@@ -6,8 +6,6 @@ import { useState, useEffect } from 'react';
 import {useSelector} from 'react-redux';
 import ipAdress from '../ip.js'
 
-import ipAdress from '../ip.js'
-
 import AppLoading from 'expo-app-loading';
 import {
   useFonts,
