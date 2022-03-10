@@ -134,7 +134,7 @@ export default function SignUpScreen({ route, navigation }) {
                   guardType: ponctuelle,
                 }))
 
-                const request = await fetch(`http://192.168.1.5:3000/users/signup-more/${token}`, {
+                const request = await fetch(`http://192.168.72.163:3000/users/signup-more/${token}`, {
                   method: "POST",
                   body: data
                 })

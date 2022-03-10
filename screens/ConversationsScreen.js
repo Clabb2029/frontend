@@ -2,25 +2,25 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, FlatList, Button, TouchableWithoutFeedback } from 'react-native';
 import {useSelector} from 'react-redux';
 
-// import chatRoomsData from '../assets/chatrooms'
+import chatRoomsData from '../assets/chatrooms'
 
 
 export default function ConversationsScreen(props) { 
 
   const currentUserID = useSelector(state => state.userID)
 
-  const [listConversations, setListConversations] = useState([])
+  // const [listConversations, setListConversations] = useState([])
 
-  useEffect(() => {
-    const loadConversations = async () => {
-      const rawData = await fetch(`http://192.168.72.114:3000/conversations/${currentUserID}`);
-      const data = await rawData.json();
-      // setListConversations(data.userConversations)
-    }
-    loadConversations();
-  }, []);
+  // useEffect(() => {
+  //   const loadConversations = async () => {
+  //     const rawData = await fetch(`http://192.168.72.163:3000/conversations/${currentUserID}`);
+  //     const data = await rawData.json();
+  //     setListConversations(data)
+  //   }
+  //   loadConversations();
+  // }, []);
 
-  // console.log("la liste des conversations : ", listConversations)
+  // console.log("la liste des ID des users : ", listConversations)
 
   // var conversationList = listConversations.map((user, i) => {
   //   return (
@@ -52,34 +52,33 @@ export default function ConversationsScreen(props) {
          <View style={styles.titleContainer}>
           <Text style={styles.title}>Conversations</Text>
         </View>
-        {/* <FlatList
-          style={styles.flatlist}
-          data = {listConversations}
-          renderItem= {({conversation}) =>   
+
+        <FlatList
+          data = {chatRoomsData}
+          renderItem= {({item}) =>
           <TouchableWithoutFeedback onPress={ () => props.navigation.navigate('ChatScreen')}>
-    
+       
           <View style={styles.message}>    
-            <Image source={user.avatar} style={styles.image} /> */}
+            <Image source={{uri: item.users[1].imageUri}} style={styles.image}/>
 
-            {/* {item.newMessages ? <View style={styles.badgeContainer}>
+            {item.newMessages ? <View style={styles.badgeContainer}>
               <Text style={styles.badgeText}>{item.newMessages}</Text>
-            </View> : null} */}
+            </View> : null}
 
-            {/* <View style={styles.rightContainer}>
+            <View style={styles.rightContainer}>
 
               <View style={styles.row}>
-                <Text style={styles.name}>{user.pseudo}</Text>
-                <Text style={styles.text}>2 hours ago</Text>
+                <Text style={styles.name}>{item.users[1].name}</Text>
+                <Text style={styles.text}>{item.lastMessage.createdAt}</Text>
               </View>
 
-              <Text style={styles.text} numberOfLines={2}>Hey !</Text>
+              <Text style={styles.text} numberOfLines={2}>{item.lastMessage.content}</Text>
 
-              </View>
             </View>
+          </View>
           </TouchableWithoutFeedback>
         }
-        /> */}
-        
+        />     
       </View>
   );
 }

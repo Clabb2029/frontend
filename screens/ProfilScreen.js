@@ -56,7 +56,7 @@ export default function ProfilScreen({ route }) {
 
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`http://192.168.1.5:3000/users/${userID}`);
+      const rawData = await fetch(`http://192.168.72.163:3000/users/${userID}`);
       const data = await rawData.json();
       setUserData(data.reviews)
       setUserInfo(data.userInfo)
@@ -85,7 +85,7 @@ export default function ProfilScreen({ route }) {
 
 useEffect(() => {
  const loadData = async  () => {
-   const rawData = await fetch(`http://192.168.72.114:3000/users/${userID}`);
+   const rawData = await fetch(`http://192.168.72.163:3000/users/${userID}`);
    const data = await rawData.json();
    setUserData(data.reviews)
    setUserInfo(data.userInfo)
@@ -256,7 +256,7 @@ const favoriteOverlay = () => {
 
               <MaterialCommunityIcons name="account-star" size={29} color={colorFavorite} style={{ marginRight: 10 }} 
               onPress={ async () => {
-                const request = await fetch(`http://192.168.1.5:3000/add-favorite/${token}`, {
+                const request = await fetch(`http://192.168.72.163:3000/add-favorite/${token}`, {
                 method: "POST",
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
                 body: `id_user=${userID}&pseudo=${userInfo.pseudo}&avatar=${userInfo.avatar}`
@@ -310,7 +310,7 @@ const favoriteOverlay = () => {
                   toggleOverlay()
                   var userInfoID = userInfo._id 
                   console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
-                  await fetch('http://192.168.72.114:3000/send-message/', {
+                  await fetch('http://192.168.72.163:3000/send-message/', {
                     method: "POST",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `id_receiver=${userInfoID}&id_sender=${currentUserID}&message=${message}&createdAt=${Date.now()}&read=${read}`

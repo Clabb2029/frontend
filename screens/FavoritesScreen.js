@@ -47,7 +47,7 @@ export default function FavoritesScreen(props) {
   // Récupération des favoris du user :
   useEffect(() => {
     const loadData = async () => {
-      const rawData = await fetch(`http://192.168.1.5:3000/favorites/${token}`);
+      const rawData = await fetch(`http://192.168.72.163:3000/favorites/${token}`);
       const data = await rawData.json();
       setUserFavorites(data.favoris)
     }
@@ -76,7 +76,7 @@ export default function FavoritesScreen(props) {
         <ListItem.Content right>
           <FontAwesome5 name="trash-alt" size={24} color="#2C3E50"
             onPress={async () => {
-              const request = await fetch(`http://192.168.1.5:3000/delete-favorite/${token}`,
+              const request = await fetch(`http://192.168.72.163:3000/delete-favorite/${token}`,
                 {
                   method: 'DELETE'
                 })
