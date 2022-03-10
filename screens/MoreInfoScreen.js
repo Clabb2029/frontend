@@ -134,7 +134,7 @@ export default function SignUpScreen({ route, navigation }) {
                   guardType: ponctuelle,
                 }))
 
-                const request = await fetch(`http://172.16.190.12:3000/users/signup-more/${token}`, {
+                const request = await fetch(`https://petfriendsback.herokuapp.com/users/signup-more/${token}`, {
                   method: "POST",
                   body: data
                 })

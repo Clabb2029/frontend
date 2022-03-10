@@ -13,7 +13,7 @@ export default function ConversationsScreen(props) {
 
   useEffect(() => {
     const loadConversations = async () => {
-      const rawData = await fetch(`http://192.168.72.114:3000/conversations/${currentUserID}`);
+      const rawData = await fetch(`https://petfriendsback.herokuapp.com/conversations/${currentUserID}`);
       const data = await rawData.json();
       // setListConversations(data.userConversations)
     }

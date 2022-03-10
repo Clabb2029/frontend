@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import socketIOClient from "socket.io-client";
 
 // Pensez à changer l'adresse ci-dessous avec votre IP locale !
-var socket = socketIOClient("http://192.168.72.114:3000");
+var socket = socketIOClient("https://petfriendsback.herokuapp.com/");
 
 export default function ChatScreen(props) {
   
@@ -16,7 +16,7 @@ export default function ChatScreen(props) {
   useEffect(() => { 
     socket.on('sendMessageToAll', (newMessageData)=> {
       setListMessage([...listMessage, newMessageData]);
-    });
+        });
   }, [listMessage]);
 
   var listMessageItem = listMessage.map((messageData, i)=>{
