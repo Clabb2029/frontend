@@ -94,7 +94,11 @@ var handleSubmitSignup = async () => {
 
   if(owner!=false || sitter !=false){
 
+<<<<<<< HEAD
     var request = await fetch('http://192.168.72.163:3000/users/signup', {
+=======
+    var request = await fetch('https://petfriendsback.herokuapp.com/users/signup', {
+>>>>>>> cecile
       method: "POST",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `pseudo=${pseudo}&email=${email}&password=${password}&status=${owner}&optinEmails=${optinEmails}`

@@ -8,7 +8,7 @@ import {GiftedChat} from 'react-native-gifted-chat'
 // import socketIOClient from "socket.io-client";
 
 // Pensez à changer l'adresse ci-dessous avec votre IP locale !
-// var socket = socketIOClient("http://192.168.72.163:3000");
+var socket = socketIOClient("https://petfriendsback.herokuapp.com/");
 
 export default function ChatScreen(props) {
   
@@ -35,6 +35,11 @@ export default function ChatScreen(props) {
 
 
 
+  useEffect(() => { 
+    socket.on('sendMessageToAll', (newMessageData)=> {
+      setListMessage([...listMessage, newMessageData]);
+        });
+  }, [listMessage]);
 
 
   // const [currentMessage, setCurrentMessage] = useState();
