@@ -76,7 +76,7 @@ export default function FavoritesScreen(props) {
     var favoriteID = user._id
     return (
       <View>
-        <ListItem key={e} bottomDivider style={{ backgroundColor: '#ECF0F1', minwidth: 100 }}>
+        <ListItem key={e} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
           <ListItem.Swipeable
             leftContent={
               <Button
@@ -104,14 +104,39 @@ export default function FavoritesScreen(props) {
               />
             }
           >
-            <Image source={{ uri: user.avatar }} style={styles.avatar}></Image>
-            <ListItem.Title style={styles.h6}>
-              {user.pseudo}
-            </ListItem.Title>
-           <Button title={"Voir"} buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 60, marginLeft: 85, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '90%'}}>
+              <View style={{width: '100%', flexDirection: 'row'}}>
+              <Image source={{ uri: user.avatar }} style={styles.avatar}></Image>
+              <ListItem.Title style={styles.h6}>
+                {user.pseudo}
+              </ListItem.Title> 
+              </View>
+              
+            
+            <Button title={"Voir"} buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 60, alignSelf: 'center'}} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
               onPressIn={() =>  props.navigation.navigate('ProfilScreen', { userID: user.id_user })} /> 
+            
+            </View>
+              
           </ListItem.Swipeable>
         </ListItem>
+
+        {/* <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+        <Image source={{uri : data.avatar}} style={styles.avatarItem}></Image>
+        <ListItem.Content style={{ flexDirection: 'row' }}>
+          <ListItem.Title style={styles.text}>
+            {data.pseudo}
+          </ListItem.Title>
+        </ListItem.Content>
+        <Image source={icon} style={{width:35, height:35, marginRight:75}}></Image>
+        <ListItem.Content right><Button title="Voir" buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 80, marginRight: 15, marginVertical: 10 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+          onPress={() => props.navigation.navigate('ProfilScreen', { userID: data._id })} /></ListItem.Content>
+      </ListItem> */}
+
+
+
+
+
         <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 450 }}>
           <Text style={styles.textOverlay}>Envoyer un message à {user.pseudo} :</Text>
           <TextInput
@@ -168,7 +193,7 @@ export default function FavoritesScreen(props) {
   } else {
     return (
       <View style={styles.container}>
-        <Text style={styles.h1}>Mes favoris : </Text>
+        <Text style={styles.h1}>Mes favoris</Text>
         <ScrollView>
           <View style={{ flex: 1 }}>
             {favorites}
@@ -192,18 +217,15 @@ const styles = StyleSheet.create({
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 35,
     textAlign: 'center',
-    marginTop: 45,
-    marginBottom: 15
+    marginTop: 50,
+    marginBottom: 20
   },
   h6: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 25,
-    textAlign: 'left',
-    marginTop: 15,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 15
+    alignSelf: 'center',
+    marginLeft: 15
   },
   avatar: {
     width: 75,
@@ -219,4 +241,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 10
   },
+  favoriteContainer:{
+    flexDirection: 'row',
+    width: '100%'
+  }
 });

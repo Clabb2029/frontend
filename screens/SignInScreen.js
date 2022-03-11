@@ -1,70 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, Pressable, TextInput } from 'react-native';
-import { SocialIcon, } from 'react-native-elements';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { Button, Input } from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ipAdress from '../ip.js';
 
-function CustomButton({onPress, text, type ="PRIMARY", bgColor, fgColor }) {
-  return (
-     <Pressable onPress={onPress} 
-     style={[styles.containerButton, styles[`container_${type}`],
-     bgColor ? {backgroundColor: bgColor} : {}
-     ]}>
-         <Text 
-         style={[styles.text, styles[`text_${type}`],
-         fgColor ? {color: fgColor} :{}
-         ]}>{text}</Text>
-     </Pressable>
-  );
-}
+import AppLoading from 'expo-app-loading';
+import {
+  useFonts, 
+  AlegreyaSans_300Light,  
+  AlegreyaSans_400Regular,  
+  AlegreyaSans_500Medium, 
+  AlegreyaSans_700Bold,  
+} from '@expo-google-fonts/alegreya-sans';
 
-function SocialMediaButtons(props) {
 
-  const onGoogleSignInPressed = () => {
-      
-  };
-
-  const onFacebookSingInPressed = () => {
-      
-  };
-  return (
-      <>
-    <View style={{width: '100%', flexDirection: 'column'}}>
-            <SocialIcon
-              button
-              title="Sign In facebook"
-              type="facebook"
-              onPress={onFacebookSingInPressed}
-            />
-          </View>
-          <View style={{width: '100%', flexDirection: 'column'}}>
-            <SocialIcon
-              title="Sign In Google Plus"
-              button
-              type="google-plus-official"
-              onPress={onGoogleSignInPressed}
-            />
-          </View>
-          </>
-  );
-}
-
-function CustomInputs({value, setValue, placeholder, secureTextEntry}) {
-  return (
-     <View style={styles.containerInput}>
-         <TextInput
-         value={value}
-         onChangeText={setValue}
-         placeholder={placeholder }
-         style={styles.input}
-         secureTextEntry={secureTextEntry}/>
-     </View>
-  );
-}
-
- 
 export default function SignInScreen(props) {
+
+  let [fontsLoaded] = useFonts({
+    AlegreyaSans_300Light,  
+    AlegreyaSans_400Regular,  
+    AlegreyaSans_500Medium, 
+    AlegreyaSans_700Bold,  
+  });
 
   const dispatch = useDispatch()
 
@@ -72,118 +30,106 @@ export default function SignInScreen(props) {
   const [password, setPassword] = useState('');
   const [errorSignIn, setErrorSignIn] = useState('')
 
-var handleSubmitSignin = async () => {
+  var handleSubmitSignin = async () => {
 
-  var request = await fetch(`${ipAdress}/users/signin`, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `email=${email}&password=${password}`
-    })
-  const response = await request.json() 
-  if (response.result == true){
-    dispatch({type: 'addToken', token: response.user.token})
-    dispatch({type: 'addUserID', userID: response.user._id})
-    props.navigation.navigate('BottomNavigator')
-  }else{
-    setErrorSignIn(response.error)
-  } 
+    var request = await fetch(`${ipAdress}/users/signin`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `email=${email}&password=${password}`
+      })
+    const response = await request.json() 
+    if (response.result == true){
+      dispatch({type: 'addToken', token: response.user.token})
+      dispatch({type: 'addUserID', userID: response.user._id})
+      props.navigation.navigate('BottomNavigator')
+    }else{
+      setErrorSignIn(response.error)
+    } 
 
-}
-return (
-  <View style={styles.container}>
-    <Text style={styles.title}>CONNECTION</Text>
-    
-    <SocialMediaButtons />
-      <View style={styles.inputButton}>
-      <CustomInputs placeholder="Email" value={email} setValue={setEmail}/>
-      <CustomInputs placeholder="Password" value={password} setValue={setPassword} secureTextEntry />
+  }
+
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
+  return (
+    <SafeAreaView style={styles.container}>
+
+      <Text style={styles.title}>Connexion</Text>
+      
+      <View style={styles.buttonContainer}>
+        <Button title={"Facebook"} icon={{name:'facebook', type: 'font-awesome', size: 15, color:'#1775f1'}}  iconContainerStyle={{ marginRight: 15 }} buttonStyle={{borderColor: '#1775f1'}} type="outline" containerStyle={{width: '40%', marginBottom: 15, marginHorizontal: 5}} titleStyle={{ fontSize: 17, color: 'black', fontFamily: 'AlegreyaSans_500Medium' }} />
+        <Button title={"Google"} icon={{name:'google', type: 'font-awesome', size: 15, color:'#ea4438'}}  iconContainerStyle={{ marginRight: 15 }} buttonStyle={{borderColor: '#ea4438'}} type="outline" containerStyle={{width: '40%', marginBottom: 15, marginHorizontal: 5}} titleStyle={{fontSize: 17, color: 'black', fontFamily: 'AlegreyaSans_500Medium'}} />
       </View>
-    <Text style={styles.error}>{errorSignIn}</Text>
-    <CustomButton text="SE CONNECTER" onPress={() => handleSubmitSignin()} />
-  </View>
-);
+
+      <View style={styles.divider}></View>
+
+      <Text style={styles.text}>ou</Text>
+
+      <View style={styles.inputContainer}>
+        <Input placeholder='Email' leftIcon={{ type: 'font-awesome', name: 'envelope', marginRight: 5 }} label='Email' style={{fontFamily: 'AlegreyaSans_400Regular'}} labelStyle={{color: '#2C3E50' }} value={email} onChangeText={setEmail}/>
+        <Input placeholder='Mot de passe' leftIcon={{ type: 'font-awesome', name: 'lock', marginRight: 5}} label='Mot de passe' style={{fontFamily: 'AlegreyaSans_400Regular' }} labelStyle={{color: '#2C3E50' }} containerStyle={{marginTop: 20}} value={password} onChangeText={setPassword} secureTextEntry/>
+        <Text style={styles.error}>{errorSignIn}</Text>
+      </View>
+
+      <View style={styles.validateContainer}>
+        <Button title={"Se connecter"} icon={{name:'arrow-right', type: 'font-awesome', size: 20, color:'white'}}  iconContainerStyle={{ marginRight: 15 }} buttonStyle={{backgroundColor: '#D35400'}} containerStyle={{width: '70%', marginBottom: 15, marginHorizontal: 5}} titleStyle={{fontFamily: 'AlegreyaSans_700Bold', fontSize: 20}} onPress={() => handleSubmitSignin()}/>
+      </View>
+
+    </SafeAreaView>
+  )};
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: "100%",
-    padding: 10,
+    backgroundColor: 'white'
   },
 
-  inputButton: {
-    marginTop: 20,
-    marginBottom: 20,
-    width: "100%",
-  
+  title: {
+    color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    fontSize: 35,
+    textAlign: 'center',
+    marginTop: 50
   },
-  containerCheckbox: {
+
+  buttonContainer: {
+    width: '100%',
     flexDirection: 'row',
-    borderRadius: 25,
-    padding: 1,
-    marginVertical: 1,
-    marginTop: 15,
+    justifyContent: 'center',
+    marginTop: 70,
   },
-  containerButton: {
-    width: "100%",
-    padding: 10,
-    marginVertical: 1,
-    marginTop: 5,
-    marginBottom: 5,
+
+  divider: {
+    width: '80%',
+    height: 1,
+    backgroundColor: '#c7c7c7',
+    marginTop: 40
+  },
+
+  text: {
+    color: '#c7c7c7',
+    fontFamily: 'AlegreyaSans_300Light'
+  },
+
+  inputContainer: {
+    width: '80%',
+    marginTop: 30
+  },
+
+  validateContainer: {
+    width: '100%',
     alignItems: 'center',
-    borderRadius: 10
-},
+    marginTop: 70
+  },
 
-container_PRIMARY: {
-    backgroundColor: "#D35400",
-},
-
-container_TERTIARY: {
-
-},
-
-text: {
-    fontWeight: 'bold',
-    color: '#fff'
-},
-text_TERTIARY: {
-    color: "gray"
-},
-
-containerInput: {
-  width: "100%",
-  padding: 10,
-  backgroundColor: "#fff",
-  borderColor: "#e8e8e8",
-  borderWidth: 1,
-  borderRadius: 5,
-
-},
-container: {
-  alignItems: 'center',
-  width: "100%",
-  padding: 50
-},
-title: {
-  padding: 35,
-  alignSelf: 'center',
-  fontSize: 24,
-  fontWeight: 'bold',
-  color: '#051C60',
-  margin: 10
-},
-
-souhait:  {
-  padding: 1,
-  margin: 10
-},
-subtile: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  color: '#000',
-  margin: 1
-},
-
+  error: {
+    color: 'red',
+    alignSelf: 'center',
+    fontFamily: 'AlegreyaSans_300Light',
+    fontSize: 15
+  }
 });

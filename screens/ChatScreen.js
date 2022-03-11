@@ -19,12 +19,12 @@ export default function ChatScreen(props) {
     setMessages([
       {
         _id: 1,
-        text: 'Coucou ! Ca te dirait de garder mon chien ? Il est très gentil ! Mais je dois partir ce week-end aller voir mes parents...',
-        createdAt: new Date(),
+        text: 'Coucou, est-ce que ça te dirait de garder Baya ? Elle est très sage ! Je dois partir ce week-end aller voir mes parents...',
+        createdAt: '1710079',
         user: {
           _id: 2,
-          name: 'Fonzy',
-          avatar: 'https://imgur.com/gdxyfkF.jpg',
+          name: 'Baya',
+          avatar: 'https://imgur.com/dcHRlz6.jpg',
         },
       },
     ])

@@ -10,39 +10,15 @@ import ipAdress from '../ip.js'
 
 import AppLoading from 'expo-app-loading';
 import {
-  useFonts,
-  AlegreyaSans_100Thin,
-  AlegreyaSans_100Thin_Italic,
-  AlegreyaSans_300Light,
-  AlegreyaSans_300Light_Italic,
-  AlegreyaSans_400Regular,
-  AlegreyaSans_400Regular_Italic,
-  AlegreyaSans_500Medium,
-  AlegreyaSans_500Medium_Italic,
-  AlegreyaSans_700Bold,
-  AlegreyaSans_700Bold_Italic,
-  AlegreyaSans_800ExtraBold,
-  AlegreyaSans_800ExtraBold_Italic,
-  AlegreyaSans_900Black,
-  AlegreyaSans_900Black_Italic,
+  useFonts,  
+  AlegreyaSans_300Light, 
+  AlegreyaSans_500Medium,  
 } from '@expo-google-fonts/alegreya-sans';
 
 export default function MapScreen(props) {
   let [fontsLoaded] = useFonts({
-    AlegreyaSans_100Thin,
-    AlegreyaSans_100Thin_Italic,
-    AlegreyaSans_300Light,
-    AlegreyaSans_300Light_Italic,
-    AlegreyaSans_400Regular,
-    AlegreyaSans_400Regular_Italic,
-    AlegreyaSans_500Medium,
-    AlegreyaSans_500Medium_Italic,
-    AlegreyaSans_700Bold,
-    AlegreyaSans_700Bold_Italic,
-    AlegreyaSans_800ExtraBold,
-    AlegreyaSans_800ExtraBold_Italic,
-    AlegreyaSans_900Black,
-    AlegreyaSans_900Black_Italic,
+    AlegreyaSans_300Light, 
+    AlegreyaSans_500Medium,  
   });
 
   // Chargement de la map :
@@ -199,7 +175,7 @@ export default function MapScreen(props) {
             style={{ width: 30, height: 32 }}
             resizeMode="contain"
           />
-           <Overlay isVisible={profilVisible} overlayStyle={{ width: 200, height: 215 }}>
+           <Overlay isVisible={profilVisible} overlayStyle={{ width: 200, height: 260 }}>
            <ScrollView>
            <FontAwesome name="close" size={20} color="#2C3E50" style={{marginLeft:160}} onPress={markerClose}/>
             <View style={{alignItems:'center'}}>
@@ -207,7 +183,7 @@ export default function MapScreen(props) {
               <Image source={{uri : userAvatar}} style={styles.avatarOverlay}></Image>
               <Text style={styles.textOverlay}>{userPseudo}</Text>
               </View>
-              <Button title="Voir" buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: 80, marginVertical: 5 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+              <Button title="Voir" buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} containerStyle={{ width: '80%', marginVertical: 5 }} titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
           onPress={() => (props.navigation.navigate('ProfilScreen', { userID: userMarkerId }), markerClose() )} />
             </View>
               </ScrollView>
@@ -222,19 +198,19 @@ export default function MapScreen(props) {
   } else {
     return (
       <View style={styles.container}>
-        <Text style={styles.h1}>Utilisateurs à proximité :</Text>
+        <Text style={styles.h1}>Utilisateurs à proximité</Text>
         {/* Affichage filtres         */}
         <View style={{ flexDirection: 'row' }}>
           <Button title="Ajouter des filtres"
             buttonStyle={{ borderColor: "#2C3E50", backgroundColor: "#ECF0F1", borderRadius: 3 }}
             type="outline"
-            containerStyle={{ width: 150, marginVertical: 10, }}
+            containerStyle={{ width: 150, marginTop: 20, marginBottom: 10 }}
             titleStyle={{ color: "#2C3E50", fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
             onPress={toggleOverlay}
           />
-          <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 400 }}>
+          <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 415 }}>
             <ScrollView>
-              <Text style={styles.textOverlay}>Sélectionnez une espèce : </Text>
+              <Text style={styles.textOverlay}>Sélectionnez une espèce</Text>
               <CheckBox
                 center
                 title="Chien"
@@ -305,10 +281,7 @@ export default function MapScreen(props) {
 
         {/* Affichage de la liste de users à proximité : */}
         <ScrollView>
-          <View style={{
-            flex: 1, width: 365,
-            backgroundColor: '#ECF0F1',
-          }}>
+          <View style={{ flex: 1, width: 365, backgroundColor: '#ECF0F1' }}>
             {userNear}
           </View>
         </ScrollView>
@@ -334,24 +307,25 @@ const styles = StyleSheet.create({
   textOverlay: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
-    fontSize: 20,
-    marginVertical: 10,
+    fontSize: 22,
+    marginTop: 10,
+    marginBottom: 20,
     textAlign: 'center'
   },
   textCheckbox: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
-    fontSize: 18
+    fontSize: 15
   },
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.47,
+    width: '95%',
+    height: '50%',
   },
   text: {
     color: '#2C3E50',
     marginVertical: 20,
     marginRight: 15,
-    fontFamily: 'AlegreyaSans_500Medium',
+    fontFamily: 'AlegreyaSans_300Light',
     fontSize: 20
   },
   avatarItem: {

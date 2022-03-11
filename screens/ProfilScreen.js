@@ -63,16 +63,6 @@ export default function ProfilScreen({ route }) {
 
   const currentUserID = useSelector(state => state.userID)
 
-  useEffect(() => {
-    const loadData = async () => {
-      const rawData = await fetch(`${ipAdress}users/${userID}`);
-      const data = await rawData.json();
-      setUserData(data.reviews)
-      setUserInfo(data.userInfo)
-      setReviewSender(data.reviewSender)
-    }
-    loadData();
-  }, []);
  
   // Calcul de la moyenne des notes
   var totalRate = 0;
@@ -100,20 +90,6 @@ useEffect(() => {
  loadData();
 }, []);
 
-// Calcul de la moyenne des notes
-var totalRate = 0;
-var averageRate =[]
-for (var j = 0; j< userData.length; j++){
-  totalRate += userData[j].rate
-  var average = Math.round( totalRate / userData.length);
-}
-for (var j = 0; j < 5; j++) {
-  var color = {};
-  if (j < average) {
-    color = '#D35400' 
-  } else {color = '#2C3E50' }
-  averageRate.push(<FontAwesome name="star" size={24} color={color} />)
-}
 
 // Eléments à injecter dans l'onglet Avis
 var noReviews = "";
@@ -121,11 +97,7 @@ if (userData.length === 0){
   noReviews = "Pas encore d'avis !"
  }
 
-  // Eléments à injecter dans l'onglet Avis
-  var noReviews = "";
-  if (userData.length === 0) {
-    noReviews = "Pas encore d'avis !"
-  }
+  
   let userReviews = reviewSender.map((review, e) => {
     // Notes
     var rating = []
@@ -177,7 +149,6 @@ if (userInfo.guardType == false) {
   badgeName ='Ponctuelle'}
 
 // Envois des messages : 
-
 const read = false 
 const [visible, setVisible] = useState(false);
 const [message, setMessage] = useState('')
@@ -280,15 +251,15 @@ const favoriteOverlay = () => {
                   setColorFavorite('#D35400')
                 }
               }}/>
-              <Overlay isVisible={visibleOK} overlayStyle={{ width: 300, height: 150 }}>
-              <Text style={styles.h6}>{favorisOK}</Text>
+              <Overlay isVisible={visibleOK} overlayStyle={{ width: 250, height: 130 }}>
+              <Text style={styles.textFavoriteOverlay}>{favorisOK}</Text>
               <Button
                 title="OK"
                 buttonStyle={{
                   backgroundColor:"#2C3E50",
                   borderRadius: 3,
                 }}
-                containerStyle={{marginTop:10}}
+                containerStyle={{marginTop:10, width: '30%', alignSelf: 'center'}}
                 titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
                 onPress={ () => {
                   favoriteOverlay()
@@ -297,63 +268,67 @@ const favoriteOverlay = () => {
               </Overlay>
             </View>
 
-            <Overlay isVisible={visible} overlayStyle={{ width: 325, height: 450 }}>
+            <Overlay isVisible={visible} overlayStyle={{ width: 300, height: 300 }}>
 
-              <Text style={styles.textOverlay}>Envoyer un message à {userInfo.pseudo} :</Text>
+              <Text style={styles.textMessageOverlay}>Envoyer un message à {userInfo.pseudo}</Text>
 
               <TextInput
-                style = {{fontFamily: 'AlegreyaSans_400Regular', color: "#2C3E50"}}
+                style = {{fontFamily: 'AlegreyaSans_400Regular', color: "#2C3E50", marginHorizontal: 20, marginTop: 10}}
                 multiline
-                placeholder='Type your message ...'
+                placeholder='Tapez votre message ...'
                 onChangeText={(msg)=>setMessage(msg)}
                 value={message}
               />
 
-              <Button
-                title="Send"
-                buttonStyle={{
-                  backgroundColor: '#D35400',
-                  borderRadius: 3,
-                }}
-                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
-                onPress={async () => {
-                  toggleOverlay()
-                  var userInfoID = userInfo._id 
-                  console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
-                  await fetch(`${ipAdress}send-message/`, {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id_receiver=${userInfoID}&id_sender=${currentUserID}&message=${message}&createdAt=${Date.now()}&read=${read}`
-                  })
-                  setMessage()
-                }}
-              />
+              <View style={styles.messageButtonContainer}>
+                <Button
+                  title="Envoyer"
+                  buttonStyle={{
+                    backgroundColor: '#D35400',
+                    borderRadius: 3,
+                    width: '50%',
+                    alignSelf: 'center'
+                  }}
+                  titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+                  onPress={async () => {
+                    toggleOverlay()
+                    var userInfoID = userInfo._id 
+                    console.warn("valeur de ID userInfo : ", userInfoID, "valeur de currentUserID : ", currentUserID)
+                    await fetch(`${ipAdress}send-message/`, {
+                      method: "POST",
+                      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                      body: `id_receiver=${userInfoID}&id_sender=${currentUserID}&message=${message}&createdAt=${Date.now()}&read=${read}`
+                    })
+                    setMessage()
+                  }}
+                />
 
-              <Button
-                title="Fermer"
-                buttonStyle={{
-                  backgroundColor:"#2C3E50",
-                  borderRadius: 3,
-                }}
-                containerStyle={{marginTop:10}}
-                titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
-                onPress={ () => {
-                  toggleOverlay()
-                }}
-              />
+                <Button
+                  title="Fermer"
+                  buttonStyle={{
+                    backgroundColor:"#2C3E50",
+                    borderRadius: 3,
+                    width: '50%', alignSelf: 'center'
+                  }}
+                  containerStyle={{marginTop:10}}
+                  titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }}
+                  onPress={ () => {
+                    toggleOverlay()
+                  }}
+                />
+              </View>
             </Overlay>
 
             <View style={styles.star}>
               {averageRate}
             </View>
-            <Text style={styles.h6}>Description :</Text>
+            <Text style={styles.h6}>Description</Text>
             <Text style={styles.text}>{userInfo.description}</Text>
-            <Text style={styles.h6}>Type de Garde souhaitée : </Text>
+            <Text style={styles.h6}>Type de Garde souhaitée</Text>
             <View >
               <Badge value={badgeName} badgeStyle={styles.badge}>
               </Badge>
             </View>
-            <Text style={styles.h6}>Disponibilité souhaitée :</Text>
           </View>
 
           {/* Tab Photos :           */}
@@ -369,21 +344,6 @@ const favoriteOverlay = () => {
               inactiveSlideShift={0}
               onSnapToItem={(index) => setIndex(index)}
               useScrollView={true} />
-            {/* <Pagination
-              dotsLength={userInfo.photos.length}
-              activeDotIndex={index}
-              carouselRef={isCarousel}
-              dotStyle={{
-                width: 10,
-                height: 10,
-                borderRadius: 5,
-                marginHorizontal: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.92)'
-              }}
-              inactiveDotOpacity={0.4}
-              inactiveDotScale={0.6}
-              tappableDots={true}
-            /> */}
           </View>
 
           {/* Tab Avis : */}
@@ -409,11 +369,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatar: {
-    width: 100,
-    height: 100,
-    marginLeft: 135,
-    marginBottom: 15,
-    borderRadius: 50
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+    borderRadius: 100,
+    alignSelf: 'center'
   },
   tabs: {
     paddingHorizontal: 16,
@@ -423,12 +383,14 @@ const styles = StyleSheet.create({
   },
   star: {
     flexDirection: 'row',
-    marginLeft: 20
+    marginTop: 10,
+    marginLeft: 40
   },
   buttonRight: {
     flexDirection: 'row',
     position: 'absolute',
-    margin: 10,
+    top: 30,
+    right: 20,
     marginLeft: 280
   },
   tab: {
@@ -441,29 +403,35 @@ const styles = StyleSheet.create({
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 20,
     textAlign: 'left',
-    marginTop: 10,
+    marginTop: 30,
     marginBottom: 10,
-    marginLeft: 10
+    marginLeft: 20
   },
   text: {
     color: '#2C3E50',
-    marginLeft: 20,
-    marginRight: 10,
+    marginHorizontal: 40,
+    marginTop: 10,
+    textAlign: 'justify',
     fontFamily: 'AlegreyaSans_400Regular'
   },
   badge: {
     backgroundColor: "#D35400",
     width: 125,
-    height: 25
+    height: 25,
+    alignSelf: 'flex-start',
+    marginTop: 10,
+    marginLeft: 40
   },
   avatarItem: {
-    width: 75,
-    height: 75,
+    width: 60,
+    height: 60,
     borderRadius : 50
   },
   textReview: {
     fontFamily: 'AlegreyaSans_400Regular',
     color: '#2C3E50',
+    marginRight: 10,
+    textAlign: 'justify'
   },
   noreviews: {
     color: '#2C3E50',
@@ -476,8 +444,10 @@ const styles = StyleSheet.create({
   },
   containerCarousel: {
     backgroundColor: 'white',
+    alignSelf: 'center',
+    marginTop: 20,
     borderRadius: 8,
-    width: Dimensions.get('window').width,
+    width: '90%',
     paddingBottom: 0,
     shadowColor: "#000",
     shadowOffset: {
@@ -489,13 +459,27 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   image: {
-    width: Math.round(Dimensions.get('window').width * 1),
+    width: '100%',
     height: 400,
   },
-  textOverlay: {
+  textMessageOverlay: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
     textAlign: 'center',
-    fontSize: 20
+    fontSize: 20,
+    marginTop: 5, 
+    marginBottom: 20
+  },
+  messageButtonContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    marginBottom: 10
+  },
+  textFavoriteOverlay: {
+    textAlign: 'center',
+    marginTop: 5,
+    marginBottom: 10,
+    fontFamily: 'AlegreyaSans_500Medium',
+    fontSize: 17,
   },
 });
