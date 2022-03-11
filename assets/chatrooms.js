@@ -12,7 +12,7 @@ export default [{
     }],
     lastMessage: {
       id: 'm1',
-      content: 'Coucou, est-ce que ça te dirait de garder Baya ? Elle est très sage ! Je dois partir ce week-end aller voir mes parents...',
+      content: 'Coucou, est-ce que ça te dirait de garder Baya ? Elle est très sage ! Je dois partir le week-end du 25 mars voir mes parents...',
       createdAt: '2h',
     },
   }, 
@@ -67,7 +67,7 @@ export default [{
     lastMessage: {
       id: 'm4',
       content: "Merci encore d'avoir gardé Fonzy ! Il a l'air très heureux de sa journée passée avec vous ! ",
-      createdAt: '3 semaines',
+      createdAt: '1 mois',
     }
   },
 

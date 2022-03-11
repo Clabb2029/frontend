@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,10 +18,10 @@ import {
 export default function SignInScreen(props) {
 
   let [fontsLoaded] = useFonts({
-    AlegreyaSans_300Light,  
-    AlegreyaSans_400Regular,  
-    AlegreyaSans_500Medium, 
-    AlegreyaSans_700Bold,  
+   AlegreyaSans_300Light,  
+  AlegreyaSans_400Regular,  
+  AlegreyaSans_500Medium, 
+  AlegreyaSans_700Bold,  
   });
 
   const dispatch = useDispatch()

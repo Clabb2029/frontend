@@ -5,6 +5,25 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {GiftedChat} from 'react-native-gifted-chat'
 
+import AppLoading from 'expo-app-loading';
+import {
+  useFonts,
+  AlegreyaSans_100Thin,
+  AlegreyaSans_100Thin_Italic,
+  AlegreyaSans_300Light,
+  AlegreyaSans_300Light_Italic,
+  AlegreyaSans_400Regular,
+  AlegreyaSans_400Regular_Italic,
+  AlegreyaSans_500Medium,
+  AlegreyaSans_500Medium_Italic,
+  AlegreyaSans_700Bold,
+  AlegreyaSans_700Bold_Italic,
+  AlegreyaSans_800ExtraBold,
+  AlegreyaSans_800ExtraBold_Italic,
+  AlegreyaSans_900Black,
+  AlegreyaSans_900Black_Italic,
+} from '@expo-google-fonts/alegreya-sans';
+
 import ipAdress from '../ip.js'
 // import socketIOClient from "socket.io-client";
 
@@ -12,6 +31,24 @@ import ipAdress from '../ip.js'
 // var socket = socketIOClient("https://petfriendsback.herokuapp.com/");
 
 export default function ChatScreen(props) {
+
+  let [fontsLoaded] = useFonts({
+    AlegreyaSans_100Thin,
+    AlegreyaSans_100Thin_Italic,
+    AlegreyaSans_300Light,
+    AlegreyaSans_300Light_Italic,
+    AlegreyaSans_400Regular,
+    AlegreyaSans_400Regular_Italic,
+    AlegreyaSans_500Medium,
+    AlegreyaSans_500Medium_Italic,
+    AlegreyaSans_700Bold,
+    AlegreyaSans_700Bold_Italic,
+    AlegreyaSans_800ExtraBold,
+    AlegreyaSans_800ExtraBold_Italic,
+    AlegreyaSans_900Black,
+    AlegreyaSans_900Black_Italic,
+  });
+
   
   const [messages, setMessages] = useState([]);
 
@@ -19,7 +56,7 @@ export default function ChatScreen(props) {
     setMessages([
       {
         _id: 1,
-        text: 'Coucou, est-ce que ça te dirait de garder Baya ? Elle est très sage ! Je dois partir ce week-end aller voir mes parents...',
+        text: 'Coucou, est-ce que ça te dirait de garder Baya ? Elle est très sage ! Je dois partir le week-end du 25 mars voir mes parents...',
         createdAt: '1710079',
         user: {
           _id: 2,
@@ -68,6 +105,9 @@ export default function ChatScreen(props) {
   //   );
   // });
 
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
   return (
 
     <GiftedChat
@@ -118,6 +158,6 @@ export default function ChatScreen(props) {
         
     // </View>
   );
-}
+}}
 
 
