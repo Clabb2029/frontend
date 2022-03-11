@@ -90,10 +90,11 @@ export default function ProfilScreen(props) {
   // gardes effectuées :
   var agendaList = agendaInfo.map((date, i) => {
     if (date.status == "Validé" && new Date(date.beginning) < new Date()) {
-      return (<ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
+      return (
+      <ListItem key={i} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
         <Image source={{uri : date.id_sender.avatar}} style={styles.avatarItem}></Image>
         <ListItem.Content>
-          <ListItem.Title style={styles.h6}>
+          <ListItem.Title style={styles.name}>
             {date.id_sender.pseudo}
           </ListItem.Title>
           <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
@@ -161,7 +162,7 @@ export default function ProfilScreen(props) {
       return (<ListItem key={j} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
         <Image source={{uri : date.id_sender.avatar}} style={styles.avatarItem}></Image>
         <ListItem.Content>
-          <ListItem.Title style={styles.h6}>
+          <ListItem.Title style={styles.name}>
             {date.id_sender.pseudo}
           </ListItem.Title>
           <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
@@ -178,12 +179,12 @@ export default function ProfilScreen(props) {
             <ListItem key={k} bottomDivider style={{ backgroundColor: '#ECF0F1' }}>
               <Image source={{uri : date.id_sender.avatar}} style={styles.avatarItem}></Image>
               <ListItem.Content>
-                <ListItem.Title style={styles.h6}>
+                <ListItem.Title style={styles.name}>
                   {date.id_sender.pseudo}
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.text}>Du {dateFormat(date.beginning)} au {dateFormat(date.ending)}</ListItem.Subtitle>
                 <View style={{ flexDirection: 'row' }}>
-                  <Button title="ACCEPTER"
+                  <Button title="Accepter"
                     onPress={async () => {
                       const request = await fetch(`${ipAdress}/agenda/`, {
                         method: "PUT",
@@ -199,10 +200,11 @@ export default function ProfilScreen(props) {
                         setAgendaInfo(dateList)
                       }
                     }}
-                    buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
+                    buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }}
                     containerStyle={{ width: 100, marginRight: 25, marginVertical: 10 }}
                     titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 20 }} />
-                  <Button title="REFUSER"
+
+                  <Button title="Refuser"
                     onPress={async () => {
                       const request = await fetch(`${ipAdress}/agenda/`, {
                         method: "PUT",
@@ -235,7 +237,7 @@ export default function ProfilScreen(props) {
 
     return (
       <View style={{ flex: 1, marginTop: 50 }}>
-        <Text style={styles.h1}>Agenda des gardes : </Text>
+        <Text style={styles.h1}>Agenda des gardes</Text>
         {/* TabBar :  */}
         <Tabs
           tabs={tabs}
@@ -320,16 +322,16 @@ const styles = StyleSheet.create({
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 35,
     textAlign: 'center',
-    margin: 25
+    marginTop: 5,
+    marginBottom: 30
   },
   h6: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 20,
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 10
+    alignSelf: 'center',
+    marginTop: 30,
+    marginBottom: 20,
   },
   textOverlay: {
     color: '#2C3E50',
@@ -337,9 +339,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20
   },
+
+name: {
+  color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    fontSize: 20,
+    textAlign: 'center',
+},
   text: {
     color: '#2C3E50',
-    marginLeft: 10,
     marginRight: 10,
     fontFamily: 'AlegreyaSans_400Regular'
   },

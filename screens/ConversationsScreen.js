@@ -4,8 +4,44 @@ import {useSelector} from 'react-redux';
 
 import chatRoomsData from '../assets/chatrooms'
 
+import AppLoading from 'expo-app-loading';
+import {
+  useFonts,
+  AlegreyaSans_100Thin,
+  AlegreyaSans_100Thin_Italic,
+  AlegreyaSans_300Light,
+  AlegreyaSans_300Light_Italic,
+  AlegreyaSans_400Regular,
+  AlegreyaSans_400Regular_Italic,
+  AlegreyaSans_500Medium,
+  AlegreyaSans_500Medium_Italic,
+  AlegreyaSans_700Bold,
+  AlegreyaSans_700Bold_Italic,
+  AlegreyaSans_800ExtraBold,
+  AlegreyaSans_800ExtraBold_Italic,
+  AlegreyaSans_900Black,
+  AlegreyaSans_900Black_Italic,
+} from '@expo-google-fonts/alegreya-sans';
+
 
 export default function ConversationsScreen(props) { 
+
+  let [fontsLoaded] = useFonts({
+    AlegreyaSans_100Thin,
+    AlegreyaSans_100Thin_Italic,
+    AlegreyaSans_300Light,
+    AlegreyaSans_300Light_Italic,
+    AlegreyaSans_400Regular,
+    AlegreyaSans_400Regular_Italic,
+    AlegreyaSans_500Medium,
+    AlegreyaSans_500Medium_Italic,
+    AlegreyaSans_700Bold,
+    AlegreyaSans_700Bold_Italic,
+    AlegreyaSans_800ExtraBold,
+    AlegreyaSans_800ExtraBold_Italic,
+    AlegreyaSans_900Black,
+    AlegreyaSans_900Black_Italic,
+  });
 
   const currentUserID = useSelector(state => state.userID)
 
@@ -45,7 +81,9 @@ export default function ConversationsScreen(props) {
   // })
 
 
-
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  } else {
   return (
       <View style={styles.container}>
 
@@ -69,7 +107,7 @@ export default function ConversationsScreen(props) {
 
               <View style={styles.row}>
                 <Text style={styles.name}>{item.users[1].name}</Text>
-                <Text style={styles.text}>{item.lastMessage.createdAt}</Text>
+                <Text style={styles.date}>{item.lastMessage.createdAt}</Text>
               </View>
 
               <Text style={styles.text} numberOfLines={2}>{item.lastMessage.content}</Text>
@@ -81,7 +119,7 @@ export default function ConversationsScreen(props) {
         />     
       </View>
   );
-}
+}}
 
 
 const styles = StyleSheet.create({
@@ -100,7 +138,11 @@ const styles = StyleSheet.create({
   },
  
   title: {
-    fontSize: 30,
+    color: '#2C3E50',
+    fontFamily: 'AlegreyaSans_500Medium',
+    fontSize: 35,
+    textAlign: 'center',
+    marginTop: 10
   },
 
   flatlist: {
@@ -137,7 +179,7 @@ const styles = StyleSheet.create({
 
   badgeText: {
     color: 'white',
-    fontSize: 12
+    fontSize: 12,
   },
 
   rightContainer: {
@@ -151,12 +193,20 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 18,
+    fontFamily: 'AlegreyaSans_500Medium',
   },
 
   text: {
-    color:'grey'
+    color: 'black',
+    fontSize: 15,
+    fontFamily: 'AlegreyaSans_300Light'
+  },
+
+  date: {
+    color: 'black',
+    fontSize: 15,
+    fontFamily: 'AlegreyaSans_400Regular'
   }
 
 })

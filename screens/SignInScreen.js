@@ -18,10 +18,10 @@ import {
 export default function SignInScreen(props) {
 
   let [fontsLoaded] = useFonts({
-    AlegreyaSans_300Light,  
-    AlegreyaSans_400Regular,  
-    AlegreyaSans_500Medium, 
-    AlegreyaSans_700Bold,  
+   AlegreyaSans_300Light,  
+  AlegreyaSans_400Regular,  
+  AlegreyaSans_500Medium, 
+  AlegreyaSans_700Bold,  
   });
 
   const dispatch = useDispatch()
