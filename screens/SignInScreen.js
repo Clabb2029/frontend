@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import {useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -53,7 +53,9 @@ export default function SignInScreen(props) {
     return <AppLoading />;
   } else {
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
 
       <Text style={styles.title}>Connexion</Text>
       
@@ -76,7 +78,9 @@ export default function SignInScreen(props) {
         <Button title={"Se connecter"} icon={{name:'arrow-right', type: 'font-awesome', size: 20, color:'white'}}  iconContainerStyle={{ marginRight: 15 }} buttonStyle={{backgroundColor: '#D35400'}} containerStyle={{width: '70%', marginBottom: 15, marginHorizontal: 5}} titleStyle={{fontFamily: 'AlegreyaSans_700Bold', fontSize: 20}} onPress={() => handleSubmitSignin()}/>
       </View>
 
-    </SafeAreaView>
+      </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   )};
 }
 

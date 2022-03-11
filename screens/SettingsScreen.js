@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Input, CheckBox, Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialIcons } from '@expo/vector-icons'
 import AppLoading from 'expo-app-loading';
 import ipAdress from '../ip.js';
 
@@ -65,6 +66,7 @@ export default function SettingsScreen(props) {
   const [description, setDescription] = useState("")
 
   const [password, setPassword] = useState("")
+  const [pseudo, setPseudo] = useState('');
 
   //Pour ajouter images via la pellicule
   const [image, setImage] = useState(null);
@@ -87,179 +89,119 @@ export default function SettingsScreen(props) {
     return <AppLoading />;
   } else {
     return (
-      <View style={styles.container}>
-        <ScrollView>
-        <Button 
-          title="Se Déconnecter"
-          buttonStyle={{ backgroundColor: "red", borderRadius: 3 }} 
-          containerStyle={{ width: 130, marginLeft: 120, marginTop: 45 }} 
-          titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-          onPress= {async ()=> 
-           ( AsyncStorage.clear(),
-             props.navigation.navigate('HomeScreen')
-          )}/>
-          <Text style={styles.h1}>Modifier mon profil : </Text>
-          <Text style={styles.h6}>Où je vis : </Text>
-          <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
-            <Input
-              placeholder='Code Postal'
-              value={codePostal} setValue={setCodePostal}
-              containerStyle={{ width: 150 }}
-            />
-            <Input
-              placeholder='Ville'
-              value={ville} setValue={setVille}
-              containerStyle={{ width: 150 }}
-            />
-          </View>
-          <View style={{ flexDirection: "row", marginHorizontal: 20 }}>
-           <CheckBox
-            center
-            title="Appartement"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            checked={appartement}
-            onPress={() => { setAppartement(true); setMaison(false) }}
-          />
-          <CheckBox
-            center
-            title="Maison"
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
-            checked={maison}
-            onPress={() => { setAppartement(false); setMaison(true) }}
-          />
-          </View>
-          
-          <Text style={styles.h6}>Espèces que je souhaites garder : </Text>
-          <View style={{ flexDirection: "row" }}>
-            <CheckBox
-              center
-              title="Chien"
-              textStyle={styles.textCheckbox}
-              checked={chien}
-              checkedColor={'#D35400'}
-              onPress={() => setChien(!chien)}
-            />
-            <CheckBox
-              center
-              title="Chat"
-              textStyle={styles.textCheckbox}
-              checked={chat}
-              checkedColor={'#D35400'}
-              onPress={() => setChat(!chat)}
-            />
-            <CheckBox
-              center
-              title="Lapin"
-              textStyle={styles.textCheckbox}
-              checked={lapin}
-              checkedColor={'#D35400'}
-              onPress={() => setLapin(!lapin)}
-            />
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <CheckBox
-              center
-              title="Cheval"
-              textStyle={styles.textCheckbox}
-              checked={cheval}
-              checkedColor={'#D35400'}
-              onPress={() => setCheval(!cheval)}
-            />
-            <CheckBox
-              center
-              title="Autres"
-              textStyle={styles.textCheckbox}
-              checked={autres}
-              checkedColor={'#D35400'}
-              onPress={() => setAutres(!autres)}
-            />
-          </View>
-          <Text style={styles.h6}>Je recherche des gardes : </Text>
-          <CheckBox
-              center
-              title="Ponctuelle"
-              checkedIcon="dot-circle-o"
-              uncheckedIcon="circle-o"
-              checked={ponctuelle}
-              onPress={() => { setRegular(false); setPonctuelle(true) }}
-            />
-            <CheckBox
-              center
-              title="Régulière"
-              checkedIcon="dot-circle-o"
-              uncheckedIcon="circle-o"
-              checked={regular}
-              onPress={() => { setRegular(true); setPonctuelle(false) }}
-            />
-          <Text style={styles.h6}>Description : </Text>
-          <TextInput
-            placeholder='Décrivez-vous et vos attentes'
-                multiline
-                style={{fontFamily:'AlegreyaSans_400Regular', color:"#2C3E50"}}
-                onChangeText={(value) => setDescription(value)}
-                value={description} />
-          <Text style={styles.h6}>Disponibilités souhaitées : </Text>
-          <Input
-          containerStyle={{ width: 150}}
-          />
-          <Text style={styles.h6}>Modifier mon mot de passe : </Text>
-          <Input 
-          placeholder='Ancien mot de passe'
-          containerStyle={{ width: 250 }}
-          />
-          <Input 
-          placeholder='Nouveau mot de passe'
-          containerStyle={{ width: 250 }}
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          />
-          <Text style={styles.h6}>Changer mon avatar : </Text>
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Button title="Choisir une image"
-              buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
-              containerStyle={{ width: 100, marginRight: 15, marginVertical: 10 }}
-              titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-              onPress={pickImage} />
-            {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-          </View>
-          <Button 
-          title="Valider les modifications !"
-          buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }} 
-          containerStyle={{ width: 130, marginLeft: 120, marginVertical: 10 }} 
-          titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
-          onPress={async () => {
-              var data = new FormData();
-              data.append('image', {
-                uri: image,
-                type: 'image/jpeg',
-                name: 'image.jpg'
-              });
-              data.append('userInfo', JSON.stringify({
-                zipcode: codePostal,
-                city: ville,
-                livingPlace: maison,
-                guardType: ponctuelle,
-                description: description,
-                newpassword: password
-              }))
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView style={{ width: '100%' }}>
+            <View style={{ width: '100%', height: '100%', alignItems: 'center' }}>
+              <Text style={styles.title}>Modifier mon profil</Text>
+              <View style={styles.inputContainer}>
+                <Input placeholder="Pseudo" leftIcon={{ type: 'font-awesome', name: 'user', marginRight: 5 }} label='Pseudo' style={{ fontFamily: 'AlegreyaSans_400Regular' }} labelStyle={{ color: '#2C3E50' }} value={pseudo} onChangeText={setPseudo} />
+                <Input placeholder='Mot de passe' leftIcon={{ type: 'font-awesome', name: 'lock', marginRight: 5 }} label='Mot de passe' style={{ fontFamily: 'AlegreyaSans_400Regular' }} labelStyle={{ color: '#2C3E50' }} containerStyle={{ marginTop: 10 }} value={password} onChangeText={setPassword} secureTextEntry />
+                <Input placeholder='Nouveau mot de passe' leftIcon={{ type: 'font-awesome', name: 'lock', marginRight: 5 }} label='Nouveau mot de passe' style={{ fontFamily: 'AlegreyaSans_400Regular' }} labelStyle={{ color: '#2C3E50' }} containerStyle={{ marginTop: 10 }} value={password} onChangeText={setPassword} secureTextEntry />
 
-              const request = await fetch(`${ipAdress}/users/signup-more/${token}`, {
-                method: "POST",
-                body: data
-              })
-              const reponse = await request.json()
-              console.log(reponse)
-              if (reponse.result) {
-                navigation.navigate('BottomNavigator')
-              } else {
-                setErrorSignUp(reponse.error)
-              }
-            }}
-          />
-        </ScrollView>
-      </View>
+              </View>
+
+              <View style={styles.addressContainter}>
+                <View style={styles.address}>
+                  <Input placeholder="Code Postal" leftIcon={{ type: 'font-awesome', name: 'map-pin', marginRight: 5 }} label='Code Postal' style={{ fontFamily: 'AlegreyaSans_400Regular' }} labelStyle={{ color: '#2C3E50' }} value={codePostal} onChangeText={setCodePostal} />
+                  <Input placeholder="Ville" leftIcon={{ type: 'font-awesome', name: 'home', marginRight: 5 }} label='Ville' style={{ fontFamily: 'AlegreyaSans_400Regular' }} labelStyle={{ color: '#2C3E50' }} value={ville} onChangeText={setVille} />
+                </View>
+              </View>
+              <Text style={styles.subtile}>Je vis dans :</Text>
+              <View style={styles.containerCheckbox}>
+                <CheckBox
+                  center
+                  title="Appartement"
+                  checkedColor={'#D35400'}
+                  textStyle={styles.textCheckbox}
+                  checked={appartement}
+                  onPress={() => { setAppartement(true); setMaison(false) }}
+                />
+                <CheckBox
+                  center
+                  title="Maison"
+                  checkedColor={'#D35400'}
+                  textStyle={styles.textCheckbox}
+                  checked={maison}
+                  onPress={() => { setAppartement(false); setMaison(true) }}
+                />
+              </View>
+              <Text style={styles.subtile}>Je cherche des gardes:</Text>
+              <View style={styles.containerCheckbox}>
+                <CheckBox
+                  center
+                  title="Ponctuelle"
+                  checkedColor={'#D35400'}
+                  textStyle={styles.textCheckbox}
+                  checked={ponctuelle}
+                  onPress={() => { setRegular(false); setPonctuelle(true) }}
+                />
+                <CheckBox
+                  center
+                  title="Régulière"
+                  checkedColor={'#D35400'}
+                  textStyle={styles.textCheckbox}
+                  checked={regular}
+                  onPress={() => { setRegular(true); setPonctuelle(false) }}
+                />
+              </View>
+              <Text style={styles.subtile}>Choisir mon image de profil:</Text>
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Button title="Choisir une image"
+                  buttonStyle={{ backgroundColor: "#2C3E50", borderRadius: 3 }}
+                  containerStyle={{ width: '100%', alignItems: 'center', }}
+                  titleStyle={{ fontFamily: 'AlegreyaSans_500Medium', fontSize: 18 }}
+                  onPress={pickImage} />
+                {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+              </View>
+           
+              <View style={styles.validateContainer} />
+              <Button title="Valider mes modifications"
+                buttonStyle={{ backgroundColor: "#D35400", borderRadius: 3 }}
+                icon={{ name: 'arrow-right', type: 'font-awesome', size: 20, color: 'white' }}
+                iconContainerStyle={{ marginRight: 15 }}
+                containerStyle={{ width: '70%', marginBottom: 15, marginHorizontal: 5 }}
+                titleStyle={{ fontFamily: 'AlegreyaSans_700Bold', fontSize: 20 }}
+                onPress={async () => {
+                  if ((maison != false || appartement != false) && (ponctuelle != false || regular != false)) {
+                    var data = new FormData();
+                    data.append('image', {
+                      uri: image,
+                      type: 'image/jpeg',
+                      name: 'image.jpg'
+                    });
+                    data.append('userInfo', JSON.stringify({
+                      zipcode: codePostal,
+                      city: ville,
+                      livingPlace: maison,
+                      guardType: ponctuelle,
+                    }))
+
+                    const request = await fetch(`${ipAdress}/users/signup-more/${token}`, {
+                      method: "POST",
+                      body: data
+                    })
+                    const reponse = await request.json()
+                    console.log(reponse)
+                    if (reponse.result) {
+                      navigation.navigate('BottomNavigator')
+                    } else {
+                      setErrorSignUp(reponse.error)
+                    }
+                  } else {
+                    setErrorSignUp("Veuillez selectionner une checkbox")
+                  }
+                }} />
+                 <View style={styles.divider}></View>
+          
+            <View style={{flexDirection: 'row', marginVertical:40, alignSelf: 'flex-start', marginLeft: 45, alignItems:'center' }}>
+              <MaterialIcons name="logout" size={30} color="#2C3E50" onPress={async () =>(AsyncStorage.clear(), props.navigation.navigate('HomeScreen'))}/>
+              <Text style={{fontFamily: 'AlegreyaSans_700Bold', fontSize: 18, color:"#2C3E50"}}> Déconnexion</Text>
+              </View>
+              </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -271,20 +213,68 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  h1: {
+  addressContainter: {
+    width: "80%",
+  },
+  address: {
+    flexDirection: "row",
+    width: "50%",
+    borderRadius: 25,
+    marginRight: 5,
+  },
+  containerCheckbox: {
+    flexDirection: 'row',
+    borderRadius: 25,
+    padding: 10,
+  },
+  inputContainer: {
+    width: '80%',
+    marginTop: 15
+  },
+  containerButton: {
+    width: "100%",
+    padding: 5,
+    marginTop: 10,
+    marginVertical: 1,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  containerInput: {
+    backgroundColor: "#fff",
+    width: "100%",
+    padding: 10,
+    borderColor: "#e8e8e8",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginVertical: 5
+  },
+  title: {
     color: '#2C3E50',
     fontFamily: 'AlegreyaSans_500Medium',
     fontSize: 35,
     textAlign: 'center',
-    marginTop: 25
+    marginTop: 50,
+    marginBottom: 45
   },
-  h6: {
+  subtile: {
+    fontSize: 19,
     color: '#2C3E50',
-    fontFamily: 'AlegreyaSans_500Medium',
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 10
+    alignSelf: 'flex-start',
+    marginLeft: 45,
+    fontFamily: 'AlegreyaSans_700Bold',
+    marginVertical: 15
   },
+  validateContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 40
+  },
+  divider: {
+    width: '80%',
+    height: 1,
+    backgroundColor: '#c7c7c7',
+    marginTop: 30
+  },
+
 });
